@@ -1,0 +1,6 @@
+node_modules/
+uploads/
+logs/
+live.config.json
+local.config.json
+ssh.config.js
