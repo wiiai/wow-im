@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import { socket, useSocketStore } from "@/stores/socket";
 import { useUserStore } from "@/stores/user";
-import { useCall } from "./useCall";
+import { useCall } from "./useCall.js";
 import { onMounted, ref } from "vue";
 import { Toast } from "vant";
 import MyPhoto from "./MyPhoto.vue";
