@@ -14,6 +14,9 @@ rm -rf public
 npm run build
 cd ../
 
+mkdir -p server/public/mobile
+mkdir -p server/public/web
+
 cp -R ui/dist/ server/public/mobile
 cp -R ui/dist/ server/public/web
 
