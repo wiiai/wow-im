@@ -12,6 +12,7 @@
     }
   ],
   "compilerOptions": {
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "allowJs": true
   }
 }

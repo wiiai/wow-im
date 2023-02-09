@@ -7,23 +7,18 @@ import { CmdEnum } from "@/types/IMessagePayload";
 import { useUserStore } from "@/stores/user";
 import Page from "@/components/Page.vue";
 import { useFriendStore } from "@/stores/friend";
-import cameraIcon from "@/assets/img/camera_fill.svg";
-import photoIcon from "@/assets/img/photo_fill.svg";
-import videoIcon from "@/assets/img/video_dial_fill.svg";
-import positionIcon from "@/assets/img/position_fill.svg";
 import fileIcon from "@/assets/img/file_fill.svg";
-import yuyinIcon from "@/assets/img/yuyin_fill.svg";
 import { getUserListById } from "@/service/group";
 import dayjs from "dayjs";
-import { query_history_list } from "@/service/message";
 import { sleep } from "@/utils/sleep";
 import { upload } from "@/service/upload";
 import { MsgTypeEnum } from "@/types/IMessage";
-import { RecordRTCPromisesHandler, invokeSaveAsDialog } from "recordrtc";
+import { RecordRTCPromisesHandler } from "recordrtc";
 import { Form, Toast } from "vant";
 import { Howl, Howler } from "howler";
 import { downloadFile } from "@/utils/downloadFile";
-import type { IUserInfo } from "@/types/IUserInfo";
+import { menus } from './common'
+import type { GetArrayElementType } from "@/types/GetArrayElementType";
 
 const route = useRoute();
 const socket = useSocketStore();
@@ -43,34 +38,6 @@ const loading = ref(false);
 const hasMore = ref(true);
 
 const scrollRef = ref<HTMLDivElement | null>(null);
-
-const menus = [
-  {
-    key: "photo",
-    text: "照片",
-    icon: photoIcon,
-  },
-  {
-    key: "camera",
-    text: "拍摄",
-    icon: cameraIcon,
-  },
-  {
-    key: "yuyin_call",
-    text: "语音",
-    icon: yuyinIcon,
-  },
-  {
-    key: "video_call",
-    text: "视频",
-    icon: videoIcon,
-  },
-  {
-    key: "file",
-    text: "文件",
-    icon: fileIcon,
-  },
-];
 
 const commonParams = {
   cmd: is_group ? CmdEnum.group_chat : CmdEnum.private_chat,
@@ -154,7 +121,7 @@ const onLoad = async () => {
     });
     loading.value = false;
     setTimeout(() => {
-      const $el = document.querySelector(`#${id}`);
+      const $el = document.querySelector(`#${id}`) as HTMLDivElement;
       socket.scrollTo($el.offsetTop);
     }, 100);
   } catch (e: any) {
@@ -187,7 +154,7 @@ onMounted(() => {
 
 watchEffect(() => {
   scrollRef.value?.addEventListener("scroll", (e: Event) => {
-    const top = e.target!.scrollTop;
+    const top = (e.target as HTMLDivElement)!.scrollTop;
     if (top === 0) {
       onLoad();
     }
@@ -231,7 +198,7 @@ const afterReadFile = (file: any) => {
   });
 };
 
-const menuClick = async (item) => {
+const menuClick = async (item: GetArrayElementType<typeof menus>) => {
   if (item.key === "video_call") {
     if (!is_group) {
       socket.setDialUser({
@@ -253,7 +220,7 @@ const menuClick = async (item) => {
     });
     recorder.startRecording();
 
-    const sleep = (m) => new Promise((r) => setTimeout(r, m));
+    const sleep = (m: number) => new Promise((r) => setTimeout(r, m));
     Toast("录制3S");
     await sleep(3000);
 
@@ -274,20 +241,12 @@ const menuClick = async (item) => {
   }
 };
 
-const playAudio = (src) => {
+const playAudio = (src: any) => {
   var sound = new Howl({
     src: [src],
   });
   console.log(sound);
   sound.play();
-  // const audio = document.createElement('audio');
-  // audio.setAttribute('src', src);
-  // audio.setAttribute('autoplay', 'autoplay');
-  // document.body.appendChild(audio);
-
-  // setTimeout(()=> {
-  //   audio.play();
-  // }, 2000)
 };
 
 const fileDownload = (link: string, name: string) => {
@@ -318,7 +277,7 @@ const fileDownload = (link: string, name: string) => {
                 </template>
                 <div
                   v-if="item.type === 3"
-                  @click="fileDownload(item.content, item.title)"
+                  @click="fileDownload(item.content, item.title!)"
                 >
                   <span>{{ item.title || "文件" }}</span>
                   <img class="msg-icon" :src="fileIcon" alt="" />
