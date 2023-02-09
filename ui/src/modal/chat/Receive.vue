@@ -36,7 +36,7 @@
 import { useSocketStore } from "@/stores/socket";
 import { useUserStore } from "@/stores/user";
 import { socket } from "@/stores/socket";
-import { useCall } from "./useCall";
+import { useCall } from "./useCall.js";
 import MyPhoto from './MyPhoto.vue';
 import { ref } from "vue";
 
