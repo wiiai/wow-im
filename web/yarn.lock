@@ -394,6 +394,11 @@
   resolved "https://npm.shopee.io/@types%2fchai/-/chai-4.3.3.tgz#3c90752792660c4b562ad73b3fbd68bf3bc7ae07"
   integrity sha512-hC7OMnszpxhZPduX+m+nrx+uFoLkWOMiR4oa/AZF3MuSETYTZmFfJAHqZEM8MVlvfG7BEUcgvtwoCTxBp6hm3g==
 
+"@types/howler@^2.2.7":
+  version "2.2.7"
+  resolved "https://registry.npmjs.org/@types/howler/-/howler-2.2.7.tgz#5acfbed57f9e1d99b8dabe1b824729e1c1ea1fae"
+  integrity sha512-PEZldwZqJJw1PWRTpupyC7ajVTZA8aHd8nB/Y0n6zRZi5u8ktYDntsHj13ltEiBRqWwF06pASxBEvCTxniG8eA==
+
 "@types/jsdom@^20.0.0":
   version "20.0.0"
   resolved "https://npm.shopee.io/@types%2fjsdom/-/jsdom-20.0.0.tgz#4414fb629465167f8b7b3804b9e067bdd99f1791"
@@ -417,6 +422,11 @@
   version "16.18.3"
   resolved "https://npm.shopee.io/@types%2fnode/-/node-16.18.3.tgz#d7f7ba828ad9e540270f01ce00d391c54e6e0abc"
   integrity sha512-jh6m0QUhIRcZpNv7Z/rpN+ZWXOicUUQbSoWks7Htkbb9IjFQj4kzcX/xFCkjstCj5flMsN8FiSvt+q+Tcs4Llg==
+
+"@types/recordrtc@^5.6.10":
+  version "5.6.10"
+  resolved "https://registry.npmjs.org/@types/recordrtc/-/recordrtc-5.6.10.tgz#8c23c8e33c0f866be0497a87b88ec1fa7c48e829"
+  integrity sha512-IuJZgrnlsLgtD1mmGPM4v8HnqLuYZGt+YKUbJPhtDcI9DyOMNFSb4xeYn/Uwc2rJwoeHZ1YX4jpWCDnhoAbMPg==
 
 "@types/semver@^7.3.12":
   version "7.3.13"
@@ -3064,6 +3074,11 @@ vue@^3.2.41:
     "@vue/runtime-dom" "3.2.41"
     "@vue/server-renderer" "3.2.41"
     "@vue/shared" "3.2.41"
+
+vuetify@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/vuetify/-/vuetify-3.0.0.tgz#372eed0663f0ffba53439cd99aa46031e560b0f4"
+  integrity sha512-0olLmKWb+oTaebGTM02+1fWaAgnGDuIt86K3jDv2LnALQ2atSzhDS1SSASJsJCZ2PgFBdDAeJVLcNWWavRYAlQ==
 
 w3c-xmlserializer@^3.0.0:
   version "3.0.0"

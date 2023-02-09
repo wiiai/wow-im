@@ -29,10 +29,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="!checkAuthLoading">
-    <RouterView />
+  <v-app v-if="!checkAuthLoading">
+    <v-app-bar title="友友IM"></v-app-bar>
+    <v-navigation-drawer width="80" class="toolbar">
+      <div class="btns">
+        <v-btn color="primary" @click="() => router.push('/')" variant="text" class="btn">消息</v-btn>
+        <v-btn variant="text" @click="() => router.push('/friend')" color="primary" class="btn"> 朋友 </v-btn>
+        <v-btn variant="text" @click="() => router.push('/me')" color="primary" class="btn"> 我的 </v-btn>
+      </div>
+    </v-navigation-drawer>
+    <v-main>
+      <RouterView />
+    </v-main>
     <CallModal v-if="socketStore.dialUser" />
     <ChatModal v-if="socketStore.receiveUser" />
-  </template>
+  </v-app>
   <AuthLoading v-else />
 </template>
+
+<style scoped>
+.btns {
+  padding-left: 6px;
+  padding-top: 12px;
+}
+
+.btn {
+  margin-bottom: 12px;
+}
+</style>

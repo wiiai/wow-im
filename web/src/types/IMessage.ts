@@ -14,6 +14,7 @@ export interface IRemoteMessage {
   from_nickname: string;
   to_avatar: string;
   to_nickname: string;
+  title?: string;
 }
 
 export enum MsgTypeEnum {
@@ -35,6 +36,7 @@ export interface ILocalMessage {
   create_time: string;
   is_group: boolean;
   time?: number;
+  title?: string;
 }
 
 export type IMessage = IRemoteMessage | ILocalMessage;

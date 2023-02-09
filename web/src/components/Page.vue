@@ -14,9 +14,9 @@
     >
       <slot></slot>
     </div>
-    <template v-if="tabBarProps">
+    <!-- <template v-if="tabBarProps">
       <TabBar :activeIndex="tabBarProps.activeIndex" />
-    </template>
+    </template> -->
   </div>
 </template>
 
@@ -56,8 +56,6 @@ export default {
 <style lang="less" scoped>
 .page {
   position: relative;
-  width: 100vw;
-  height: 100vh;
 }
 
 .body {
@@ -65,7 +63,7 @@ export default {
   overflow: hidden;
 }
 
-.with-header {
+/**.with-header {
   height: calc(100% - 46px);
 }
 
@@ -75,5 +73,5 @@ export default {
 
 .with-header.with-tab-bar {
   height: calc(100% - 96px);
-}
+}**/
 </style>

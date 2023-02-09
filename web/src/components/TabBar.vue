@@ -10,21 +10,6 @@
         </van-tabbar-item>
       </template>
     </van-tabbar>
-    <!-- <div
-      @click="handleClick(item, index)"
-      class="tab-bar-item"
-      :class="{ 'is-active': index === activeIndex }"
-      v-for="(item, index) in menus"
-      :key="index"
-    >
-      <van-icon
-        class="icon"
-        :name="item.activeIcon"
-        v-if="index === activeIndex"
-      />
-      <van-icon class="icon" :name="item.icon" v-else />
-      <span class="span">{{ item.span }}</span>
-    </div> -->
   </div>
 </template>
 

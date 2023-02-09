@@ -20,15 +20,22 @@ interface PartialUserInfo {
   avatar: string;
 }
 
+interface CurrentChat {
+  rid: string;
+  is_group: number;
+  nickname: string;
+  avatar: string;
+}
+
 export const useSocketStore = defineStore("socket", {
   state: () => {
-    // const list = (store.get("messages") || []) as IMessage[];
     const list = [] as IMessage[];
     return {
       list,
       sessions: [] as ISession[],
       receiveUser: null as (null|PartialUserInfo),
       dialUser: null  as (null|PartialUserInfo),
+      currentChat: null as (null|CurrentChat)
     };
   },
 
@@ -60,6 +67,11 @@ export const useSocketStore = defineStore("socket", {
   actions: {
     save (list?: any[]) {
       store.set('messages', list || this.list)
+    },
+
+    setCurrentChat(data: CurrentChat) {
+      console.log(data)
+      this.$patch({ currentChat: data })
     },
 
     // 连接
