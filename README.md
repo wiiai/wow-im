@@ -3,8 +3,8 @@
 
 演示:
 - h5 https://wow-im.airtlab.com
-- 安卓
-- IOS
+- 安卓 https://github.com/wiiai/wow-im-rn/release
+- IOS https://github.com/wiiai/wow-im-rn/release
 
 源码：
 - 服务端 https://github.com/wiiai/wow-im/server
