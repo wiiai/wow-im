@@ -18,7 +18,7 @@ mkdir -p server/public/mobile
 mkdir -p server/public/web
 
 cp -R ui/dist/ server/public/mobile
-cp -R ui/dist/ server/public/web
+cp -R web/dist/ server/public/web
 
 git add .
 git commit -m "build"
