@@ -3,7 +3,7 @@
 
 演示:
 - H5 https://wow-im.airtlab.com/mobile
-- PC https://wow-im.airtlab.com/mobile
+- PC https://wow-im.airtlab.com/web
 - 安卓 https://github.com/wiiai/wow-im-rn/release
 - IOS https://github.com/wiiai/wow-im-rn/release
 
