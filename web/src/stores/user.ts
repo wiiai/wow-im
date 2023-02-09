@@ -32,6 +32,7 @@ export const useUserStore = defineStore("user", {
         this.$patch({
           token: data.token,
           userInfo: data,
+          isLogin: true
         });
         store.set("token", data.token);
         store.set("userInfo", data);

@@ -22,7 +22,16 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
 <template>
   <div class="container">
     <v-navigation-drawer width="260">
-      <div class="item" v-for="item in vList" @click="goChat(item)">
+      <div
+        class="item"
+        v-for="item in vList"
+        @click="goChat(item)"
+        :class="{
+          active:
+            socketStore.currentChat &&
+            +socketStore.currentChat.rid === item.partner_id,
+        }"
+      >
         <div class="avatar">
           <span class="badge" v-if="item.unread">{{ item.unread }}</span>
           <img :src="item.avatar" alt="" />
@@ -57,7 +66,7 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
 
 <style scoped lang="less">
 .list {
-  border-right: 1px solid #eee;
+  border-right: 1px solid #f1f1f1;
 }
 
 .container {
@@ -68,6 +77,10 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
   display: flex;
   padding: 10px 12px;
   cursor: pointer;
+  border-left: 2px solid transparent;
+  &.active {
+    background: #ddd;
+  }
   .avatar {
     position: relative;
     width: 42px;

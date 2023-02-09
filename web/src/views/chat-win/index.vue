@@ -347,7 +347,7 @@ const fileDownload = (link: string, name: string) => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f4f4f4;
+  background: #f3f3f3;
   .list {
     flex: 1;
     overflow: auto;
@@ -422,7 +422,7 @@ const fileDownload = (link: string, name: string) => {
 
 .item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 10px 12px;
   margin-bottom: 10px;
   &.is-me {
@@ -477,6 +477,7 @@ const fileDownload = (link: string, name: string) => {
 
   .msg-content-type-1 {
     text-align: right;
+    padding: 0;
   }
 
   .msg-content-type-0,

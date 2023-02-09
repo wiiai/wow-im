@@ -49,14 +49,20 @@ const onSubmit = (values: any) => {
       password: password.value,
     })
     .then(() => {
-      router.push("/");
       socket.connect();
       socket.initData();
-    });
+      router.push("/");
+    })
 };
 </script>
 
 <style scoped>
+.form {
+  width: 600px;
+  margin:  0 auto;
+  margin-top: 10%;
+}
+
 .title {
   padding-top: 60px;
   text-align: center;
