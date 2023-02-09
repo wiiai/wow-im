@@ -227,7 +227,7 @@ const menuClick = async (item: GetArrayElementType<typeof menus>) => {
   }
 };
 
-const onKeypress = (v) => {
+const onKeypress = (v: Event) => {
   console.log(v)
 }
 
