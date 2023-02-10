@@ -13,7 +13,7 @@ const logout = () => {
 </script>
 
 <template>
-  <Page :tabBarProps="{ activeIndex: 2 }">
+  <div :tabBarProps="{ activeIndex: 2 }">
     <div class="card">
       <img :src="userStore.userInfo?.avatar" alt="" />
       <div class="nickname">
@@ -29,13 +29,13 @@ const logout = () => {
         注销登录
       </van-button>
     </div>
-  </Page>
+  </div>
 </template>
 
 <style lang="less" scoped>
 .card {
   padding: 20px;
-  padding-top: 30%;
+  padding-top: 10%;
   text-align: center;
   .nickname {
     font-size: 20px;
