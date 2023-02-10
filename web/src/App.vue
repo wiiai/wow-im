@@ -31,7 +31,7 @@ onMounted(() => {
   <v-app v-if="!checkAuthLoading">
     <template v-if="userStore.isLogin">
       <v-app-bar title="友友IM"></v-app-bar>
-      <v-navigation-drawer width="80" class="toolbar">
+      <v-navigation-drawer width="80">
         <div class="btns">
           <v-btn color="primary" @click="() => router.push('/')" variant="text" class="btn">消息</v-btn>
           <v-btn variant="text" @click="() => router.push('/friend')" color="primary" class="btn"> 朋友 </v-btn>
@@ -39,7 +39,9 @@ onMounted(() => {
         </div>
       </v-navigation-drawer>
       <v-main>
-        <RouterView />
+        <div class="main">
+          <RouterView />
+        </div>
       </v-main>
       <CallModal v-if="socketStore.dialUser" />
       <ChatModal v-if="socketStore.receiveUser" />
@@ -51,8 +53,14 @@ onMounted(() => {
 
 <style scoped>
 .btns {
+  height: 100%;
   padding-left: 6px;
   padding-top: 12px;
+  background: #fcfafa;
+}
+
+.main {
+  height: calc(100vh - var(--v-layout-top));
 }
 
 .btn {

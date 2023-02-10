@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'session',
-      component: () => import('../views/Session.vue')
+      component: () => import('../views/sessions/index.vue')
     },
     {
       path: '/friend',
