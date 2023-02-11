@@ -94,6 +94,8 @@ export const useSocketStore = defineStore("socket", {
       });
 
       socket.on("message", (message: IRemoteMessage) => {
+        message.loading = false;
+
         if (message.suid !== getUserId()) {
           this.list.push({ ...message, is_read: false });
           this.save();
