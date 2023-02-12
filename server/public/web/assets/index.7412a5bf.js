@@ -1,4 +1,4 @@
-import{c as Y,r as it,d as ot,u as at,a as gt,b as Oe,e as Ke,o as yt,w as bt,f as re,g as Z,h as je,i as Re,F as Ee,j as Je,k as ge,l as Pe,m as We,C as rt,n as De,p as J,q as qe,t as Ce,s as nt,v as st,T as wt,x as At,_ as dt}from"./index.4c3c79f8.js";import{u as Rt}from"./friend.0757f2f7.js";var ut={exports:{}};(function(K){/**
+import{c as Y,r as it,d as ot,u as at,a as gt,b as Oe,e as Ke,o as yt,w as bt,f as re,g as Z,h as je,i as Re,F as Ee,j as Je,k as ge,l as Pe,m as We,C as rt,n as De,p as J,q as qe,t as Ce,s as nt,v as st,T as wt,x as At,_ as dt}from"./index.cbcc5805.js";import{u as Rt}from"./friend.79c5a700.js";var ut={exports:{}};(function(K){/**
  * {@link https://github.com/muaz-khan/RecordRTC|RecordRTC} is a WebRTC JavaScript library for audio/video as well as screen activity recording. It supports Chrome, Firefox, Opera, Android, and Microsoft Edge. Platforms: Linux, Mac and Windows. 
  * @summary Record audio, video or screen inside the browser.
  * @license {@link https://github.com/muaz-khan/RecordRTC/blob/master/LICENSE|MIT}

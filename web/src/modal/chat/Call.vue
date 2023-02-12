@@ -3,39 +3,36 @@
     <div class="main-bg"></div>
     <div class="main-shadow"></div>
     <div class="main-box">
-      <div class="video-box">
-        <MyPhoto v-show="showVideo" />
-      </div>
+      <MyPhoto v-show="showVideo" />
       <div class="person-box">
         <img class="avatar" :src="socketStore.dialUser?.avatar" alt="" />
         <div class="nickname">{{ socketStore.dialUser?.nickname }}</div>
       </div>
-  
-      <div class="actions" v-if="!showVideo">
-        <div
-          class="col"
-          @click="socketStore.setDialUser(null)"
-        >
-          <div class="btn btn-reject">
-            <img src="./avatar/s1@3x.png" alt="" />
-          </div>
-          <span>取消</span>
+    </div>
+    <div class="actions" v-if="!showVideo">
+      <div
+        class="col"
+        @click="socketStore.setDialUser(null)"
+      >
+        <div class="btn btn-reject">
+          <img src="./avatar/s1@3x.png" alt="" />
         </div>
-        <div class="col">
-          <div class="btn btn-receive">
-            <img src="./avatar/语音@3x.png" alt="" />
-          </div>
-          <span>切到语音</span>
-        </div>
+        <span>取消</span>
       </div>
-
-      <div class="actions actions-single" v-else>
-        <div class="col" @click="handleClose">
-          <div class="btn btn-reject">
-            <img src="./avatar/s1@3x.png" alt="" />
-          </div>
-          <span>挂断</span>
+      <div class="col">
+        <div class="btn btn-receive">
+          <img src="./avatar/语音@3x.png" alt="" />
         </div>
+        <span>切到语音</span>
+      </div>
+    </div>
+
+    <div class="actions actions-single" v-else>
+      <div class="col" @click="handleClose">
+        <div class="btn btn-reject">
+          <img src="./avatar/s1@3x.png" alt="" />
+        </div>
+        <span>挂断</span>
       </div>
     </div>
   </div>
@@ -104,16 +101,16 @@ onMounted(() => {
   position: fixed;
   left: 0;
   top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 .main-bg {
   position: absolute;
   left: 0;
   right: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-image: url(./avatar/avatar.jpg);
   background-size: cover;
   filter: blur(6px);
@@ -123,8 +120,8 @@ onMounted(() => {
   position: absolute;
   left: 0;
   right: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
 }
 
@@ -155,10 +152,12 @@ onMounted(() => {
 }
 
 .actions {
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
-  padding: 18%;
-  margin-top: 50%;
   text-align: center;
 
   &.actions-single {

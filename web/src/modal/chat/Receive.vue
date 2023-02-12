@@ -3,30 +3,27 @@
     <div class="main-bg"></div>
     <div class="main-shadow"></div>
     <div class="main-box">
-      <div id="partner-video">
-        <MyPhoto v-show="showVideo" />
-      </div>
+      <MyPhoto v-show="showVideo" />
       <div class="person-box">
         <img class="avatar" :src="socketStore.receiveUser?.avatar" alt="" />
         <div class="nickname">{{ socketStore.receiveUser?.nickname }}</div>
       </div>
-
-      <div class="actions" v-if="!showVideo">
-        <div class="btn btn-reject" @click="handleClick(0)">
-          <img src="./avatar/s1@3x.png" alt="" />
-          <span>拒绝</span>
-        </div>
-        <div class="btn btn-receive" @click="handleClick(1)">
-          <img src="./avatar/s2@3x.png" alt="" />
-          <span>接听</span>
-        </div>
+    </div>
+    <div class="actions" v-if="!showVideo">
+      <div class="btn btn-reject" @click="handleClick(0)">
+        <img src="./avatar/s1@3x.png" alt="" />
+        <span>拒绝</span>
       </div>
+      <div class="btn btn-receive" @click="handleClick(1)">
+        <img src="./avatar/s2@3x.png" alt="" />
+        <span>接听</span>
+      </div>
+    </div>
 
-      <div class="actions actions-single" v-else>
-        <div class="btn btn-reject" @click="handleClose()">
-          <img src="./avatar/s1@3x.png" alt="" />
-          <span>挂断</span>
-        </div>
+    <div class="actions actions-single" v-else>
+      <div class="btn btn-reject" @click="handleClose()">
+        <img src="./avatar/s1@3x.png" alt="" />
+        <span>挂断</span>
       </div>
     </div>
   </div>
@@ -140,10 +137,13 @@ const handleClick = (val: number) => {
 }
 
 .actions {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
-  padding: 20%;
-  margin-top: 60%;
+  text-align: center;
 
   &.actions-single {
     justify-content: center;
