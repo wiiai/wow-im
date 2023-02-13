@@ -101,7 +101,7 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
     width: 224px;
     &::before {
       background-image: url(../chat-win/sprite.png);
-      background-position: -1008px 0;
+      background-position: 0 -440px;
       background-repeat: no-repeat;
       content: " ";
       height: 448px;
