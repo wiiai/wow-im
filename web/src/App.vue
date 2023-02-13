@@ -28,12 +28,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="root" v-if="!checkAuthLoading">
-    <template v-if="userStore.isLogin">
+  <template v-if="!checkAuthLoading">
+    <div class="root" v-if="userStore.isLogin">
       <div class="app">
         <div class="toolbar">
           <div class="btns">
-            <v-btn variant="tonal" @click="() => router.push('/')" class="btn" color="success"
+            <v-btn
+              variant="tonal"
+              @click="() => router.push('/')"
+              class="btn"
+              color="success"
               >消息</v-btn
             >
             <v-btn
@@ -44,7 +48,12 @@ onMounted(() => {
             >
               朋友
             </v-btn>
-            <v-btn variant="tonal" color="success" @click="() => router.push('/me')" class="btn">
+            <v-btn
+              variant="tonal"
+              color="success"
+              @click="() => router.push('/me')"
+              class="btn"
+            >
               我的
             </v-btn>
           </div>
@@ -55,9 +64,9 @@ onMounted(() => {
         <CallModal v-if="socketStore.dialUser" />
         <ChatModal v-if="socketStore.receiveUser" />
       </div>
-    </template>
+    </div>
     <Login v-else></Login>
-  </div>
+  </template>
   <AuthLoading v-else />
 </template>
 
