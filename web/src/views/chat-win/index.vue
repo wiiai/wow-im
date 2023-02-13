@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import dayjs from "dayjs";
-import { computed, onMounted, ref, watchEffect } from "vue";
+import { computed, onMounted, ref, watchEffect, onUnmounted } from "vue";
 import { RecordRTCPromisesHandler } from "recordrtc";
 import { Howl } from "howler";
 import { Toast } from "vant";
@@ -16,6 +16,7 @@ import { MsgTypeEnum } from "@/types/IMessage";
 import { downloadFile } from "@/utils/downloadFile";
 import { menus, fileIcon } from "./common";
 import type { GetArrayElementType } from "@/types/GetArrayElementType";
+import { routeLocationKey } from "vue-router";
 
 const props = defineProps(["rid", "is_group", "nickname", "avatar"]);
 const socket = useSocketStore();
@@ -84,6 +85,9 @@ const list = computed(() => {
 });
 
 const onLoad = async () => {
+
+
+
   if (loading.value) {
     return;
   }
@@ -134,9 +138,54 @@ const onMount = () => {
   });
 };
 
+const shiftDown = ref(false);
+
+const onKeydown = (e: KeyboardEvent) => {
+  const el: HTMLInputElement = e.target as any;
+  if (!el || el.id !== 'chat-input') {
+    return
+  }
+
+  if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+    shiftDown.value = true
+  }
+
+  if (e.code === 'Enter') {
+    e.preventDefault();
+    if (shiftDown.value) {
+      // 换行
+      content.value = content.value + '\n'
+    } else {
+      // 发送消息
+      if (content.value.length) {
+        send();
+        content.value = '';
+      }
+    }
+  }
+}
+
+const onKeyup = (e: KeyboardEvent) => {
+  const el: HTMLInputElement = e.target as any;
+  if (!el || el.id !== 'chat-input') {
+    return
+  }
+
+  if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+    shiftDown.value = false;
+  }
+}
+
 onMounted(() => {
   onMount();
+  document.addEventListener('keydown',onKeydown)
+  document.addEventListener('keyup', onKeyup);
 });
+
+onUnmounted(() => {
+  document.removeEventListener('keydown',onKeydown)
+  document.removeEventListener('keyup', onKeyup);
+})
 
 watchEffect(() => {
   scrollRef.value?.addEventListener("scroll", (e: Event) => {
@@ -326,20 +375,15 @@ const fileDownload = (link: string, name: string) => {
               </div>
             </div>
           </div>
-          <van-button class="btn" size="small" plain type="success" @click="send"> 发送 </van-button>
         </div>
       </div>
       <div class="form">
-        <van-field
-          @keypress="onKeypress"
+        <textarea
+          id="chat-input"
           class="input"
           v-model="content"
           name="content"
           :placeholder="'正在和' + props.nickname + '对话'"
-          clearable
-          type="textarea"
-          :autosize=" { minHeight: 150 }"
-          :rules="[{ required: true, message: '请输入' }]"
         />
       </div>
     </div>
