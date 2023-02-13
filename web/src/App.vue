@@ -92,7 +92,8 @@ onMounted(() => {
   height: 800px;
   margin: 0 auto;
   border-radius: 8px;
-  background-color: #2e354c;
+  /*e0e6ef*/
+  background-color: #fff;
   .toolbar {
     width: 80px;
   }
