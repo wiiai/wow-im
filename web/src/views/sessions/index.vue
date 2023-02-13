@@ -126,8 +126,8 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
   }
   .avatar {
     position: relative;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
     img {
       width: 100%;
@@ -158,18 +158,18 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
       justify-content: space-between;
     }
     .name {
-      line-height: 25px;
+      line-height: 20px;
       font-size: 14px;
-      color: #272832;
+      color: #202325;
     }
     .date {
       font-size: 12px;
-      color: rgba(39, 40, 50, 0.4);
+      color: #bcbdbe
     }
     .content {
-      font-size: 13px;
+      font-size: 12px;
       line-height: 20px;
-      color: rgba(39, 40, 50, 0.6);
+      color: #8b8d8f;
     }
   }
 }
