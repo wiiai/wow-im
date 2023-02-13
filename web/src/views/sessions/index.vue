@@ -63,6 +63,10 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
           :avatar="socketStore.currentChat!.avatar"
         />
       </template>
+      <div class="m-box" v-else>
+        <div class="morning"></div>
+        <span class="tip">美好的一天又开始了～</span>
+      </div> 
     </template>
   </TLayout>
 </template>
@@ -71,6 +75,45 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
 .scroll {
   overflow: auto;
   height: 100%;
+}
+
+.m-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  .tip {
+    position: relative;
+    margin-top: -20px;
+    margin-right: -20px;
+    color: #888;
+  }
+}
+
+.morning {
+  display: inline-block;
+    height: 224px;
+    min-height: 224px;
+    min-width: 224px;
+    position: relative;
+    width: 224px;
+    &::before {
+      background-image: url(../chat-win/sprite.png);
+      background-position: -1008px 0;
+      background-repeat: no-repeat;
+      content: " ";
+      height: 448px;
+      left: 0;
+      min-height: 224px;
+      min-width: 224px;
+      position: absolute;
+      top: 0;
+      transform: scale(.5);
+      transform-origin: top left;
+      width: 448px;
+    }
 }
 
 .item {

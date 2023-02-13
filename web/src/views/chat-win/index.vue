@@ -244,6 +244,12 @@ const fileDownload = (link: string, name: string) => {
 
 <template>
   <div class="container">
+    <div class="header">
+      <img :src="props.avatar" alt="">
+      <span>
+        {{ props.nickname }}
+      </span>
+    </div>
     <div class="list" id="msg_list" ref="scrollRef">
       <div class="content" id="msg_content">
         <VanLoading class="list-loading" v-if="loading" size="small" />
