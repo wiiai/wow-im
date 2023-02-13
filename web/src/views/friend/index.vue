@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Page from "@/components/Page.vue";
 import { useFriendStore } from "@/stores/friend";
+import TLayout from "../TLayout.vue";
 import type { IContact } from "@/types/IContact";
 
 const router = useRouter();
@@ -33,16 +33,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <Page :tabBarProps="{ activeIndex: 1 }">
-    <div class="item" v-for="item in friendStore.list" @click="goChat(item)">
-      <div class="avatar">
-        <img :src="item.avatar" alt="" />
+  <TLayout>
+    <template v-slot:nav>
+      <div class="item" v-for="item in friendStore.list" @click="goChat(item)">
+        <div class="avatar">
+          <img :src="item.avatar" alt="" />
+        </div>
+        <div class="main">
+          <div class="name">{{ item.nickname }}</div>
+        </div>
       </div>
-      <div class="main">
-        <div class="name">{{ item.nickname }}</div>
-      </div>
-    </div>
-  </Page>
+    </template>
+  </TLayout>
 </template>
 
 <style scoped lang="less">

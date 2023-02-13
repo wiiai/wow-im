@@ -4,6 +4,7 @@ import type { ISession } from "@/types/ISession";
 import dayjs from "dayjs";
 import { computed } from "vue";
 import MChat from "../chat-win/index.vue";
+import TLayout from "../TLayout.vue";
 
 const socketStore = useSocketStore();
 
@@ -20,10 +21,9 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
 </script>
 
 <template>
-  <div class="container">
-    <v-navigation-drawer width="260">
-      <div class="scroll">
-        <div
+  <TLayout>
+    <template v-slot:nav>
+      <div
         class="item"
         v-for="item in vList"
         @click="goChat(item)"
@@ -53,27 +53,23 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
           </div>
         </div>
       </div>
-      </div>
-    </v-navigation-drawer>
-    <template v-if="socketStore.currentChat">
-      <MChat
-        :rid="Number(socketStore.currentChat.rid)"
-        :is_group="Number(socketStore.currentChat!.is_group || 0)"
-        :nickname="socketStore.currentChat!.nickname"
-        :avatar="socketStore.currentChat!.avatar"
-      />
     </template>
-  </div>
+    <template v-slot:main>
+      <template v-if="socketStore.currentChat">
+        <MChat
+          :rid="Number(socketStore.currentChat.rid)"
+          :is_group="Number(socketStore.currentChat!.is_group || 0)"
+          :nickname="socketStore.currentChat!.nickname"
+          :avatar="socketStore.currentChat!.avatar"
+        />
+      </template>
+    </template>
+  </TLayout>
 </template>
 
 <style scoped lang="less">
 .scroll {
   overflow: auto;
-  height: 100%;
-  background-color: #f1f1f1;
-}
-
-.container {
   height: 100%;
 }
 

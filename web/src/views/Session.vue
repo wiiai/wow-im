@@ -21,7 +21,7 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
 
 <template>
   <div class="container">
-    <v-navigation-drawer width="260">
+    <div width="260">
       <div
         class="item"
         v-for="item in vList"
@@ -52,7 +52,7 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
           </div>
         </div>
       </div>
-    </v-navigation-drawer>
+    </div>
     <template v-if="socketStore.currentChat">
       <MChat
         :rid="Number(socketStore.currentChat.rid)"
