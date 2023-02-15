@@ -222,6 +222,23 @@ export const initSocket = (server: http.Server) => {
       }
     });
 
+    // 协议转发
+    function transfer (name: string) {
+      socket.on(name, data => {
+        const { to, ...rest } = data;
+        if (userMap[to]) {
+          userMap[to].emit(name, {
+            sender: user!.id,
+            nickname: user!.nickname,
+            avatar: user!.avatar,
+            data: rest
+          })
+        }
+      });
+    }
+
+    transfer('async');
+
     // 视频聊天
     socket.on('video-call', data => {
       if (userMap[data.to]) {

@@ -16,7 +16,6 @@ import { MsgTypeEnum } from "@/types/IMessage";
 import { downloadFile } from "@/utils/downloadFile";
 import { menus, fileIcon } from "./common";
 import type { GetArrayElementType } from "@/types/GetArrayElementType";
-import { routeLocationKey } from "vue-router";
 
 const props = defineProps(["rid", "is_group", "nickname", "avatar"]);
 const socket = useSocketStore();

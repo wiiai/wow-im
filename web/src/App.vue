@@ -56,6 +56,14 @@ onMounted(() => {
             >
               我的
             </v-btn>
+            <v-btn
+              variant="tonal"
+              color="success"
+              @click="() => router.push('/design')"
+              class="btn"
+            >
+              白板
+            </v-btn>
           </div>
         </div>
         <div class="main">

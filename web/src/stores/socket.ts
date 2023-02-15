@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { host } from "@/utils/request";
 
 export let socket: Socket;
+export let socketInstance: Socket;
 
 interface PartialUserInfo {
   id: number;
@@ -76,7 +77,7 @@ export const useSocketStore = defineStore("socket", {
 
     // 连接
     connect() {
-      socket = io(host, {
+      socketInstance = socket = io(host, {
         query: {
           suid: 1,
           token: getToken(),
@@ -131,6 +132,15 @@ export const useSocketStore = defineStore("socket", {
       })
       this.$patch({ list: this.list });
       this.save();
+    },
+
+    async (to: number, content: {}) {
+      socket.emit("async", {
+        to,
+        ...content,
+      }, () => {
+        console.log('async success');
+      })
     },
 
     // 发送消息
