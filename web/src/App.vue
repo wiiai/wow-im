@@ -64,6 +64,14 @@ onMounted(() => {
             >
               白板
             </v-btn>
+            <v-btn
+              variant="tonal"
+              color="success"
+              @click="() => router.push('/meeting')"
+              class="btn"
+            >
+              会议
+            </v-btn>
           </div>
         </div>
         <div class="main">

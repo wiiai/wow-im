@@ -25,6 +25,16 @@ const router = createRouter({
       component: () => import('../views/Me.vue')
     },
     {
+      path: '/meeting',
+      name: 'meeting',
+      component: () => import('../views/meeting/index.vue')
+    },
+    {
+      path: '/meeting-client',
+      name: 'meeting-client',
+      component: () => import('../views/meeting/client.vue')
+    },
+    {
       path: '/design',
       name: 'design',
       component: () => import('../views/design/index.vue')

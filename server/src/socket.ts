@@ -238,6 +238,8 @@ export const initSocket = (server: http.Server) => {
     }
 
     transfer('async');
+    transfer('enter-screen');
+    transfer('enter-screen-answer');
 
     // 视频聊天
     socket.on('video-call', data => {
