@@ -3,8 +3,8 @@ import { useSocketStore } from "@/stores/socket";
 import type { ISession } from "@/types/ISession";
 import dayjs from "dayjs";
 import { computed } from "vue";
-import MChat from "../chat-win/index.vue";
-import TLayout from "../TLayout.vue";
+import MChat from "@/components/chat-win/index.vue";
+import TLayout from "@/components/t-layout/index.vue";
 
 const socketStore = useSocketStore();
 

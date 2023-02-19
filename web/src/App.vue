@@ -3,11 +3,10 @@ import { onMounted, ref } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { useSocketStore } from "./stores/socket";
 import { useUserStore } from "./stores/user";
-
 import AuthLoading from "./modal/auth-loading/index.vue";
 import ChatModal from "./modal/chat/Receive.vue";
 import CallModal from "./modal/chat/Call.vue";
-import Login from "./views/Login.vue";
+import Login from "./views/login/index.vue";
 
 const router = useRouter();
 const socketStore = useSocketStore();
@@ -104,14 +103,24 @@ onMounted(() => {
 
 .app {
   display: flex;
-  width: 1200px;
-  height: 800px;
+  width: 1400px;
+  height: 90%;
+  max-height: 800px;
   margin: 0 auto;
   border-radius: 8px;
-  /*e0e6ef*/
   background-color: #fff;
   .toolbar {
-    width: 80px;
+    width: 90px;
+    border-right: 1px solid #eee;
+    .btns {
+      height: 100%;
+      padding-left: 12px;
+      padding-right: 12px;
+      padding-top: 12px;
+    }
+    .btn {
+      margin-bottom: 12px;
+    }
   }
   .main {
     flex: 1;
@@ -120,15 +129,5 @@ onMounted(() => {
     border-top-right-radius: 8px;
     background-color: #fff;
   }
-}
-
-.btns {
-  height: 100%;
-  padding-left: 6px;
-  padding-top: 12px;
-}
-
-.btn {
-  margin-bottom: 12px;
 }
 </style>

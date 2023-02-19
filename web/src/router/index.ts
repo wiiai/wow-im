@@ -1,7 +1,6 @@
-import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
-  // history: createWebHashHistory(import.meta.env.BASE_URL),
   history: createWebHashHistory('/web/'),
   routes: [
     {
@@ -17,22 +16,12 @@ const router = createRouter({
     {
       path: '/me',
       name: 'me',
-      component: () => import('../views/Me.vue')
-    },
-    {
-      path: '/me',
-      name: 'me',
-      component: () => import('../views/Me.vue')
+      component: () => import('../views/me/index.vue')
     },
     {
       path: '/meeting',
       name: 'meeting',
       component: () => import('../views/meeting/index.vue')
-    },
-    {
-      path: '/meeting-client',
-      name: 'meeting-client',
-      component: () => import('../views/meeting/client.vue')
     },
     {
       path: '/design',
