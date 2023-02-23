@@ -21,7 +21,7 @@ const router = createRouter({
     {
       path: '/meeting',
       name: 'meeting',
-      component: () => import('../views/meeting/index.vue')
+      component: () => import('../views/meeting-v1/index.vue')
     },
     {
       path: '/design',
