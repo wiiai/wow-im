@@ -7,9 +7,9 @@ export class FriendEntity extends BasicEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ comment: '拥有者' })
   suid: number;
 
-  @Column()
+  @Column({ comment: '目标用户' })
   tuid: number;
 }

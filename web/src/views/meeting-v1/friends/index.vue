@@ -14,18 +14,21 @@ onMounted(() => {
 
 <template>
   <div class="list">
-    <div
-      class="item"
-      v-for="item in friendStore.list"
-      @click="props.clickItem(item)"
-    >
+    <div class="item" v-for="item in friendStore.list">
       <div class="avatar">
         <img :src="item.avatar" alt="" />
       </div>
       <div class="main">
-        <div class="name">
-          <span>{{ item.nickname }}({{ item.id }})</span>
-        </div>
+        <div class="name">{{ item.nickname }}</div>
+        <v-btn
+          color="success"
+          variant="text"
+          size="small"
+          class="share"
+          @click="props.clickItem(item)"
+        >
+          桌面共享
+        </v-btn>
       </div>
     </div>
   </div>
@@ -69,6 +72,7 @@ onMounted(() => {
     flex: 1;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     .head {
       flex: 1;
       display: flex;
@@ -89,6 +93,10 @@ onMounted(() => {
       line-height: 20px;
       color: #8b8d8f;
     }
+  }
+  .share {
+    padding: 0 10px;
+    margin: 0!important;
   }
 }
 </style>

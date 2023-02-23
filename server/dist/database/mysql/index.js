@@ -17,12 +17,14 @@ const group_entity_1 = require("./entity/group.entity");
 const read_log_entity_1 = require("./entity/read-log.entity");
 const user_entity_1 = require("./entity/user.entity");
 const constant_1 = require("../../utils/constant");
+const meeting_1 = require("./entity/meeting");
 exports.entities = [
     user_entity_1.UserEntity,
     friend_entity_1.FriendEntity,
     read_log_entity_1.ReadLogEntity,
     group_entity_1.GroupEntity,
-    group_user_entity_1.GroupUserEntity
+    group_user_entity_1.GroupUserEntity,
+    meeting_1.MeetingEntity
 ];
 function initMysql() {
     return __awaiter(this, void 0, void 0, function* () {

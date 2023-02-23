@@ -17,7 +17,6 @@ onMounted(() => {
   userStore.checkLogin().then(() => {
     checkAuthLoading.value = false;
     const isLogin = userStore.isLogin && userStore.userInfo;
-
     if (isLogin) {
       socketStore.connect();
       socketStore.initData();
@@ -32,45 +31,21 @@ onMounted(() => {
       <div class="app">
         <div class="toolbar">
           <div class="btns">
-            <v-btn
-              variant="tonal"
-              @click="() => router.push('/')"
-              class="btn"
-              color="success"
-              >消息</v-btn
-            >
-            <v-btn
-              variant="tonal"
-              color="success"
-              @click="() => router.push('/friend')"
-              class="btn"
-            >
-              朋友
-            </v-btn>
-            <v-btn
-              variant="tonal"
-              color="success"
-              @click="() => router.push('/me')"
-              class="btn"
-            >
-              我的
-            </v-btn>
-            <v-btn
-              variant="tonal"
-              color="success"
-              @click="() => router.push('/design')"
-              class="btn"
-            >
-              白板
-            </v-btn>
-            <v-btn
-              variant="tonal"
-              color="success"
-              @click="() => router.push('/meeting')"
-              class="btn"
-            >
-              会议
-            </v-btn>
+            <div class="u-info">
+              <img class="avatar" :src="userStore.userInfo?.avatar" alt="" />
+            </div>
+            <div class="btn" @click="() => router.push('/')">
+              <van-icon class="m-icon" name="chat-o" />
+            </div>
+            <div class="btn" @click="() => router.push('/friend')">
+              <van-icon class="m-icon" name="friends-o" />
+            </div>
+            <div class="btn" @click="() => router.push('/meeting')">
+              <van-icon class="m-icon" name="video-o" />
+            </div>
+            <div class="btn" @click="() => router.push('/design')">
+              <van-icon class="m-icon" name="font-o" />
+            </div>
           </div>
         </div>
         <div class="main">
@@ -110,8 +85,9 @@ onMounted(() => {
   border-radius: 8px;
   background-color: #fff;
   .toolbar {
-    width: 90px;
+    width: 70px;
     border-right: 1px solid #eee;
+    background-color: #f1f1f1;
     .btns {
       height: 100%;
       padding-left: 12px;
@@ -119,7 +95,23 @@ onMounted(() => {
       padding-top: 12px;
     }
     .btn {
+      text-align: center;
       margin-bottom: 12px;
+    }
+    .u-info {
+      font-size: 12px;
+      text-align: center;
+      margin-bottom: 10px;
+      .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 4px;
+      }
+    }
+    .m-icon {
+      color: #333;
+      cursor: pointer;
+      font-size: 28px;
     }
   }
   .main {

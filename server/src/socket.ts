@@ -10,7 +10,11 @@ import { CmdEnum, IMessagePayload, MsgTypeEnum } from './types/IMessagePayload';
 import { getUrlParam } from './utils/getUrlParam';
 import { logger } from './utils/logger';
 
+// 连接状态维护
 const userMap = {} as Record<string, Socket>;
+
+// 会议在线用户维护
+const meetingMap = {} as Record<string, Number[]>;
 
 /**
  * @description 监听用户下线
@@ -197,8 +201,15 @@ export const initSocket = (server: http.Server) => {
     // 上线打印
     logger.log(`user ${user?.id} connected`);
 
-    // 监听断开
-    socket.on('disconnect', () => onDisconnected(socket, user));
+    socket.on('disconnect', () => {
+      // 监听断开
+      Object.keys(meetingMap).forEach((meeting_id) => {
+        if (meetingMap[meeting_id]) {
+          meetingMap[meeting_id] = meetingMap[meeting_id].filter((it => it !== user.id))
+        }
+      })
+      onDisconnected(socket, user)
+    });
 
     // sdp 消息的转发
     socket.on("sdp", (data) => {
@@ -240,6 +251,38 @@ export const initSocket = (server: http.Server) => {
     transfer('async');
     transfer('enter-screen');
     transfer('enter-screen-answer');
+
+    // 多人会议
+    socket.on('enter-meeting', data => {
+      const {meeting_id} = data;
+      console.log(`enter-meeting: ${user.id} enter ${meeting_id}`, data)
+      if (!meetingMap[meeting_id]) {
+        meetingMap[meeting_id] = [];
+      }
+      // 通知会议里面的其他人, 我上线了...
+      meetingMap[meeting_id].forEach((userId) => {
+        if(userMap[`${userId}`] && userId != user.id) {
+          userMap[`${userId}`].emit('enter-meeting', { user_id: user.id })
+        }
+      })
+      if (!meetingMap[meeting_id].includes(user.id)) {
+        meetingMap[meeting_id].push(user.id)
+      }
+    });
+
+    // 多人会议
+    socket.on('leave-meeting', data => {
+      const {meeting_id} = data;
+      if (meetingMap[meeting_id]) {
+        meetingMap[meeting_id] = meetingMap[meeting_id].filter((it => it !== user.id))
+      }
+      // 通知会议里面的其他人, 我下线了...
+      meetingMap[meeting_id].forEach((userId) => {
+        if(userMap[`userId`] && userId != user.id) {
+          userMap[`userId`].emit('leave-meeting', { user_id: user.id })
+        }
+      })
+    });
 
     // 视频聊天
     socket.on('video-call', data => {
