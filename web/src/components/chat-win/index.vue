@@ -174,9 +174,11 @@ const onKeyup = (e: KeyboardEvent) => {
   }
 }
 
+let markReadLoopRef = ref<undefined|number>();
+
 const markReadLoop = () => {
-  clearInterval(window['markReadLoop']);
-  window['markReadLoop'] = setInterval(() => {
+  clearInterval(markReadLoopRef.value);
+  markReadLoopRef.value = setInterval(() => {
     socket.markHasRead({
       pid: props.rid,
       is_group: props.is_group
@@ -192,7 +194,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  clearInterval(window['markReadLoop']);
+  clearInterval(markReadLoopRef.value);
   document.removeEventListener('keydown',onKeydown)
   document.removeEventListener('keyup', onKeyup);
 })
