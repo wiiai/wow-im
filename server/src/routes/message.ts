@@ -24,11 +24,11 @@ router.post('/query_session_list', async function (req, res, next) {
 router.post('/query_unread_list', async function (req, res, next) {
   const token = req.headers['token'] as string;
   const user = await userService.getUserByToken(token);
-  const body: { rid: number; is_group: boolean } = req.body
+  const body: { ruid: number; is_group: number } = req.body
 
   if (user) {
     const data = await messageService.queryUnRead(user.id, {
-      rid: body.rid,
+      ruid: body.ruid,
       is_group: body.is_group
     });
     res.json({
@@ -44,12 +44,12 @@ router.post('/query_unread_list', async function (req, res, next) {
 router.post('/query_history_list', async function (req, res, next) {
   const token = req.headers['token'] as string;
   const user = await userService.getUserByToken(token);
-  const body: { rid: number; is_group: boolean; seq: number } = req.body
+  const body: { ruid: number; is_group: number; seq: number } = req.body
 
   if (user) {
     const data = await messageService.queryHistoryMessage(user.id, {
       seq: body.seq,
-      partner_id: body.rid,
+      ruid: body.ruid,
       is_group: body.is_group,
     });
     res.json({

@@ -17,7 +17,7 @@ import { downloadFile } from "@/utils/downloadFile";
 import { menus, fileIcon } from "./common";
 import type { GetArrayElementType } from "@/types/GetArrayElementType";
 
-const props = defineProps(["rid", "is_group", "nickname", "avatar"]);
+const props = defineProps(["ruid", "is_group", "nickname", "avatar"]);
 const socket = useSocketStore();
 const userStore = useUserStore();
 const friendStore = useFriendStore();
@@ -29,9 +29,9 @@ const loading = ref(false);
 const scrollRef = ref<HTMLDivElement | null>(null);
 
 const commonParams = computed(() => ({
-  cmd: props.is_group ? CmdEnum.group_chat : CmdEnum.private_chat,
-  rid: Number(props.rid),
-  is_group: Boolean(props.is_group),
+  cmd: Number(props.is_group) === 1 ? CmdEnum.group_chat : CmdEnum.private_chat,
+  ruid: Number(props.ruid),
+  is_group: Number(props.is_group),
   to_nickname: props.nickname,
   to_avatar: props.avatar,
   from_nickname: userStore.userInfo?.nickname,
@@ -48,7 +48,7 @@ const send = () => {
 
 const isMe = (id: number) => id === userStore.userInfo?.id;
 
-const getAvatar = (id: number, is_group?: boolean) => {
+const getAvatar = (id: number) => {
   if (isMe(id)) {
     return userStore.userInfo?.avatar;
   }
@@ -56,7 +56,7 @@ const getAvatar = (id: number, is_group?: boolean) => {
   return user ? user.avatar : "";
 };
 
-const getNickname = (id: number, is_group?: boolean) => {
+const getNickname = (id: number) => {
   if (isMe(id)) {
     return userStore.userInfo?.nickname;
   }
@@ -67,9 +67,9 @@ const getNickname = (id: number, is_group?: boolean) => {
 const list = computed(() => {
   const l = socket.list
     .filter((it) => {
-      const isSend = it.suid === Number(props.rid);
-      const isReceive = it.rid === Number(props.rid);
-      return (isSend || isReceive) && Number(it.is_group) === props.is_group;
+      const isSend = it.suid === Number(props.ruid);
+      const isReceive = it.ruid === Number(props.ruid);
+      return (isSend || isReceive) && Number(it.is_group) === Number(props.is_group);
     })
     .map((it) => {
       return {
@@ -94,17 +94,17 @@ const onLoad = async () => {
 
   loading.value = true;
   const l = socket.list.filter((it) => {
-    const isSend = it.suid === props.rid;
-    const isReceive = it.rid === props.rid;
-    return (isSend || isReceive) && Number(it.is_group) === props.is_group;
+    const isSend = it.suid === props.ruid;
+    const isReceive = it.ruid === props.ruid;
+    return (isSend || isReceive) && Number(it.is_group) === Number(props.is_group);
   });
 
   try {
     await sleep(500);
     await socket.queryHistory({
-      rid: props.rid,
+      rid: props.ruid,
       seq: list.value.length ? list.value[0].time : 0,
-      is_group: Boolean(props.is_group),
+      is_group: Number(props.is_group),
     });
     loading.value = false;
     setTimeout(() => {
@@ -118,20 +118,20 @@ const onLoad = async () => {
 };
 
 const onMount = () => {
-  if (!props.is_group) {
-    friendStore.queryProfile([props.rid]).then((list) => {
+  if (Number(props.is_group) === 0) {
+    friendStore.queryProfile([props.ruid]).then((list) => {
       users.value = list;
     });
   } else {
     getUserListById({
-      id: props.rid,
+      id: props.ruid,
     }).then((res) => {
       users.value = res.data.list;
     });
   }
 
   socket.markHasRead({
-    pid: props.rid,
+    pid: props.ruid,
     is_group: props.is_group
   });
 };
@@ -180,7 +180,7 @@ const markReadLoop = () => {
   clearInterval(markReadLoopRef.value);
   markReadLoopRef.value = setInterval(() => {
     socket.markHasRead({
-      pid: props.rid,
+      pid: props.ruid,
       is_group: props.is_group
     });
   }, 200) as unknown as number;
@@ -247,7 +247,7 @@ const menuClick = async (item: GetArrayElementType<typeof menus>) => {
   if (item.key === "video_call") {
     if (!props.is_group) {
       socket.setDialUser({
-        id: props.rid,
+        id: props.ruid,
         nickname: props.nickname,
         avatar: props.avatar,
       });

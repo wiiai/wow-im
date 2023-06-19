@@ -11,7 +11,7 @@ const sessionService = {
    * @param params
    */
   async saveSession(params: ISession, user: UserEntity, msg: { _id: Types.ObjectId }) {
-    const { suid, rid, ...rest } = params;
+    const { suid, ruid, ...rest } = params;
 
     {
       // 给发送者创建 session
@@ -19,7 +19,7 @@ const sessionService = {
         $or: [
           {
             suid,
-            rid,
+            ruid,
             is_group: rest.is_group,
           },
         ],
@@ -36,7 +36,7 @@ const sessionService = {
       } else {
         const session = new SessionModel({
           suid,
-          rid,
+          ruid,
           ...rest,
           last_message_id: msg._id,
         });
@@ -49,8 +49,8 @@ const sessionService = {
       const one = await SessionModel.findOne({
         $or: [
           {
-            suid: rid,
-            rid: suid,
+            suid: ruid,
+            ruid: suid,
             is_group: rest.is_group,
           },
         ],
@@ -66,8 +66,8 @@ const sessionService = {
         );
       } else {
         const session = new SessionModel({
-          suid: rid,
-          rid: suid,
+          suid: ruid,
+          ruid: suid,
           ...rest,
           last_message_id: msg._id,
         });
@@ -95,8 +95,8 @@ const sessionService = {
       };
     }
 
-    const user_id_list = list.filter((it) => !it.is_group).map((it) => it.rid);
-    const group_id_list = list.filter((it) => it.is_group).map((it) => it.rid);
+    const user_id_list = list.filter((it) => !it.is_group).map((it) => it.ruid);
+    const group_id_list = list.filter((it) => it.is_group).map((it) => it.ruid);
 
     const lastMessages = await Promise.all(
       list.map((it) => {
@@ -113,10 +113,10 @@ const sessionService = {
     const friendSession = await Promise.all(
       users.map(async (it) => {
         return {
-          partner_id: it.id,
+          ruid: it.id,
           nickname: it.nickname,
           avatar: it.avatar,
-          is_group: false,
+          is_group: 0,
         };
       }),
     );
@@ -125,10 +125,10 @@ const sessionService = {
     const groupSession = await Promise.all(
       groups.map(async (it) => {
         return {
-          partner_id: it.id,
+          ruid: it.id,
           nickname: it.name,
           avatar: it.avatar,
-          is_group: true,
+          is_group: 1,
         };
       }),
     );
@@ -136,8 +136,8 @@ const sessionService = {
     return {
       list: list.map((it) => {
         const rInfo = it.is_group
-          ? groupSession.find((g) => g.partner_id === it.rid)
-          : friendSession.find((g) => g.partner_id === it.rid);
+          ? groupSession.find((g) => g.ruid === it.ruid)
+          : friendSession.find((g) => g.ruid === it.ruid);
 
         const last_message = lastMessages.find((m) => {
           return m?._id.toString() === it.last_message_id?.toString();
@@ -153,19 +153,19 @@ const sessionService = {
 
   async updateReadTime({
     user_id,
-    puid,
+    ruid,
     is_group,
   }: {
     user_id: number;
-    puid: number;
-    is_group: boolean;
+    ruid: number;
+    is_group: number;
   }) {
     // 给发送者创建 session
     const one = await SessionModel.findOne({
       $or: [
         {
           suid: user_id,
-          rid: puid,
+          ruid: ruid,
           is_group: is_group,
         },
       ],
@@ -181,9 +181,11 @@ const sessionService = {
     } else {
       const session = new SessionModel({
         suid: user_id,
-        rid: puid,
+        ruid: ruid,
         is_group: is_group,
         read_time: Date.now(),
+        create_time: Date.now(),
+        content: ''
       });
       await session.save();
     }

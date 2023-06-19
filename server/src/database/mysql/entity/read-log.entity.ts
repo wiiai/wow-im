@@ -11,7 +11,7 @@ export class ReadLogEntity extends BasicEntity {
   user_id: number;
 
   @Column({ comment: '对话者id (room_id or user_id)' })
-  rid: number;
+  ruid: number;
 
   @Column({ comment: '是否为群模式', type: 'tinyint', default: 0 })
   is_room: number;

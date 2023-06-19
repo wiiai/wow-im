@@ -19,7 +19,7 @@ const messageService = {
    */
   async queryUnRead(
     user_id: number,
-    params: { rid: number; is_group: boolean },
+    params: { ruid: number; is_group: number },
   ) {
     const size = 20;
 
@@ -28,7 +28,7 @@ const messageService = {
       $or: [
         {
           suid: user_id,
-          rid: params.rid,
+          ruid: params.ruid,
           is_room: Number(params.is_group),
         },
       ],
@@ -37,8 +37,8 @@ const messageService = {
     if (params.is_group) {
       // 群消息
       const list = await MessageModel.find({
-        rid: params.rid,
-        is_group: true,
+        ruid: params.ruid,
+        is_group: 1,
       })
         .where('time')
         .gt(log?.read_time || 0)
@@ -55,14 +55,14 @@ const messageService = {
     const list = await MessageModel.find({
       $or: [
         {
-          rid: params.rid,
+          ruid: params.ruid,
           suid: user_id,
-          is_group: false,
+          is_group: 0,
         },
         {
-          rid: user_id,
-          suid: params.rid,
-          is_group: false,
+          ruid: user_id,
+          suid: params.ruid,
+          is_group: 0,
         },
       ],
     })
@@ -84,14 +84,14 @@ const messageService = {
    */
   async queryHistoryMessage(
     user_id: number,
-    params: { partner_id: number; is_group: boolean; seq: number },
+    params: { ruid: number; is_group: number; seq: number },
   ) {
     const size = 20;
 
     if (params.is_group) {
       const list = await MessageModel.find({
-        rid: params.partner_id,
-        is_group: true,
+        ruid: params.ruid,
+        is_group: 1,
       })
         .where('time')
         .lt(params.seq || Date.now())
@@ -108,14 +108,14 @@ const messageService = {
     const list = await MessageModel.find({
       $or: [
         {
-          rid: user_id,
-          suid: params.partner_id,
-          is_group: false,
+          ruid: user_id,
+          suid: params.ruid,
+          is_group: 0,
         },
         {
-          rid: params.partner_id,
+          ruid: params.ruid,
           suid: user_id,
-          is_group: false,
+          is_group: 0,
         },
       ],
     })

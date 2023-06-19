@@ -49,6 +49,7 @@ const friendService = {
         id: it.id,
         avatar: it.avatar,
         nickname: it.nickname,
+        is_group: 0
       }
     })
 
@@ -57,7 +58,7 @@ const friendService = {
         id: it.id,
         avatar: it.avatar,
         nickname: it.name,
-        is_group: true
+        is_group: 1
       }
     })
 

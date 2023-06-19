@@ -18,5 +18,5 @@ export class GroupUserEntity extends BasicEntity {
 
   nickname: string;
   avatar: string;
-  is_group: boolean;
+  is_group: number;
 }

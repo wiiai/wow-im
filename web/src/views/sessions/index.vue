@@ -10,7 +10,7 @@ const socketStore = useSocketStore();
 
 const goChat = (row: ISession) => {
   socketStore.setCurrentChat({
-    rid: `${row.partner_id}`,
+    ruid: row.ruid,
     nickname: row.nickname,
     avatar: row.avatar,
     is_group: Number(row.is_group),
@@ -30,7 +30,7 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
         :class="{
           active:
             socketStore.currentChat &&
-            +socketStore.currentChat.rid === item.partner_id,
+            +socketStore.currentChat.ruid === item.ruid && Number(socketStore.currentChat.is_group) === Number(item.is_group),
         }"
       >
         <div class="avatar">
@@ -39,7 +39,7 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
         </div>
         <div class="main">
           <div class="head">
-            <div class="name">{{ item.nickname }}({{ item.partner_id }})</div>
+            <div class="name">{{ item.nickname }}({{ item.ruid }})</div>
             <div class="date" v-if="item.last_message?.create_time">
               {{ formatDate(item.last_message?.create_time) }}
             </div>
@@ -57,7 +57,7 @@ const vList = computed(() => socketStore.sessionList.map((it) => ({ ...it })));
     <template v-slot:main>
       <template v-if="socketStore.currentChat">
         <MChat
-          :rid="Number(socketStore.currentChat.rid)"
+          :ruid="Number(socketStore.currentChat.ruid)"
           :is_group="Number(socketStore.currentChat!.is_group || 0)"
           :nickname="socketStore.currentChat!.nickname"
           :avatar="socketStore.currentChat!.avatar"

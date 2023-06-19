@@ -9,7 +9,6 @@ import { userService } from './service/user.service';
 import { CmdEnum, IMessagePayload, MsgTypeEnum } from './types/IMessagePayload';
 import { getUrlParam } from './utils/getUrlParam';
 import { logger } from './utils/logger';
-import { ReadLogModel } from './database/mongo/model/read-log';
 
 // 连接状态维护
 const userMap = {} as Record<string, Socket>;
@@ -40,8 +39,6 @@ function onMessage(
   payload: IMessagePayload,
   callback: Function,
 ) {
-  console.log(payload, 222);
-
   switch (payload.cmd) {
     case CmdEnum.private_chat: {
       sendPrivateMsg(socket, user, payload, callback);
@@ -72,14 +69,15 @@ async function markRead(
   callback: Function,
 ) {
   const user_id = user.id;
-  const puid = payload.rid;
-  const is_group = payload.is_group || false;
+  const ruid = payload.ruid;
+  const is_group = payload.is_group || 0;
   
   await sessionService.updateReadTime({
     user_id,
-    puid,
+    ruid,
     is_group 
-  })
+  });
+
   callback?.();
 }
 
@@ -95,16 +93,16 @@ async function sendPrivateMsg(
   payload: IMessagePayload,
   callback: Function,
 ) {
-  const rid = payload.rid;
-  const rCon = userMap[rid];
+  const ruid = payload.ruid;
+  const rCon = userMap[ruid];
   const sCon = userMap[user.id];
 
   const data: IMessage = {
     ...payload,
-    is_group: false,
+    is_group: 0,
     type: payload.type || MsgTypeEnum.text,
     suid: user.id,
-    rid: payload.rid,
+    ruid: payload.ruid,
     title: payload.title || '',
     content: payload.content,
     create_time: new Date(),
@@ -151,16 +149,16 @@ async function sendGroupMsg(
   payload: IMessagePayload,
   callback: Function,
 ) {
-  const rid = payload.rid;
+  const ruid = payload.ruid;
   const sCon = userMap[user.id];
-  const rUsers = await groupService.getUserIdsById(rid);
+  const rUsers = await groupService.getUserIdsById(ruid);
 
   const data: IMessage = {
     ...payload,
-    is_group: true,
+    is_group: 1,
     type: payload.type || MsgTypeEnum.text,
     suid: user.id,
-    rid: payload.rid,
+    ruid: payload.ruid,
     title: payload.title || '',
     content: payload.content,
     create_time: new Date(),

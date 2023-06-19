@@ -12,10 +12,10 @@ export enum MsgTypeEnum {
 
 export interface IMessagePayload {
   cmd: CmdEnum;
-  rid: number;
+  ruid: number;
   content: string;
   msg_no: string;
   type: number;
   title?: string;
-  is_group?: boolean;
+  is_group?: number;
 }

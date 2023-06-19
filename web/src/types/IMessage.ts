@@ -1,10 +1,10 @@
 export interface IRemoteMessage {
   suid: number;
-  rid: number;
+  ruid: number;
   type: number;
   content: string;
   is_read: boolean;
-  is_group: boolean;
+  is_group: number;
   create_time: string;
   loading?: boolean;
   msg_no?: string;
@@ -27,14 +27,14 @@ export enum MsgTypeEnum {
 
 export interface ILocalMessage {
   suid: number;
-  rid: number;
+  ruid: number;
   type: number;
   content: string;
   is_read: boolean;
   loading: boolean;
   msg_no?: string;
   create_time: string;
-  is_group: boolean;
+  is_group: number;
   time?: number;
   title?: string;
 }

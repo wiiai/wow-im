@@ -3,9 +3,8 @@ import type { IMessage } from "./IMessage";
 export interface ISession {
   nickname: string;
   avatar: string;
-  partner_id: number,
-  is_group: boolean;
-
+  ruid: number,
+  is_group: number;
   unread?: number;
   last_message?: null|IMessage;
 }

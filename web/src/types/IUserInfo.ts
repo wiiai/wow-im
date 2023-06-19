@@ -5,5 +5,5 @@ export interface IUserInfo {
   city: string;
   nickname: string;
   avatar: string;
-  is_group?: boolean;
+  is_group: number;
 }

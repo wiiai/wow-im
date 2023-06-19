@@ -5,9 +5,9 @@ export enum CmdEnum {
 
 export interface IMessagePayload {
   cmd: CmdEnum;
-  rid: number;
+  ruid: number;
   content: string;
-  is_group: boolean;
+  is_group: number;
   type?: number;
   title?: string;
   to_avatar?: string;

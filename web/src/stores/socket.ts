@@ -22,7 +22,7 @@ interface PartialUserInfo {
 }
 
 interface CurrentChat {
-  rid: string;
+  ruid: number;
   is_group: number;
   nickname: string;
   avatar: string;
@@ -47,8 +47,8 @@ export const useSocketStore = defineStore("socket", {
         const list = state.list.filter((it) => {
           return (
             !it.is_read &&
-            `${it.rid}` === `${getUserId()}` &&
-            session.partner_id === it.suid
+            `${it.ruid}` === `${getUserId()}` &&
+            session.ruid === it.suid
           );
         });
 
@@ -66,6 +66,13 @@ export const useSocketStore = defineStore("socket", {
   },
 
   actions: {
+    addSession(data: any) {
+      this.sessions.push(data)
+      this.$patch({
+        sessions: JSON.parse(JSON.stringify(this.sessions))
+      })
+    },
+
     save (list?: any[]) {
       store.set('messages', list || this.list)
     },
@@ -102,7 +109,7 @@ export const useSocketStore = defineStore("socket", {
           this.save();
 
           const session = this.sessions.find(
-            (s) => s.partner_id === message.suid
+            (s) => s.ruid === message.suid
           );
 
           if (session) {
@@ -114,7 +121,7 @@ export const useSocketStore = defineStore("socket", {
               nickname: message.from_nickname,
               avatar: message.from_avatar,
               is_group: message.is_group,
-              partner_id: message.suid,
+              ruid: message.suid,
               last_message: message
             })
           }
@@ -124,7 +131,7 @@ export const useSocketStore = defineStore("socket", {
     },
 
     // 标记已读
-    markHasRead (params: { pid: number, is_group: Boolean }) {
+    markHasRead (params: { pid: number, is_group: number }) {
       const hasUnRead = this.list.filter((it) => !it.is_read);
       if (hasUnRead.length) {
         this.list.forEach((it) => {
@@ -137,7 +144,7 @@ export const useSocketStore = defineStore("socket", {
         socket.emit("message", {
           user_id: getUserId() as number,
           cmd: 2,
-          rid: params.pid,
+          ruid: params.pid,
           is_group: params.is_group
         }, () => {
           console.log('send success');
@@ -175,7 +182,7 @@ export const useSocketStore = defineStore("socket", {
         this.save();
 
         const session = this.sessions.find(
-          (s) => s.partner_id === payload.rid
+          (s) => s.ruid === payload.ruid
         );
 
         if (session) {
@@ -187,7 +194,7 @@ export const useSocketStore = defineStore("socket", {
             nickname: payload.to_nickname || '',
             avatar: payload.to_avatar || '',
             is_group: payload.is_group,
-            partner_id: payload.rid,
+            ruid: payload.ruid,
             last_message: item
           })
         }
@@ -260,7 +267,7 @@ export const useSocketStore = defineStore("socket", {
       });
       for (let i = 0; i < this.sessions.length; i++) {
         const s = this.sessionList[i];
-        const res = await pullUnreadList({ rid: s.partner_id, is_group: s.is_group })
+        const res = await pullUnreadList({ ruid: s.ruid, is_group: s.is_group })
         this.list = [...this.list, ...res.data.list].sort((a, b) => a.time - b.time);
         console.log(this.list)
       }
