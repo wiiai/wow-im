@@ -133,5 +133,33 @@ const sessionService = {
             };
         });
     },
+    updateReadTime({ user_id, puid, is_group, }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // 给发送者创建 session
+            const one = yield session_1.SessionModel.findOne({
+                $or: [
+                    {
+                        suid: user_id,
+                        rid: puid,
+                        is_group: is_group,
+                    },
+                ],
+            });
+            if (one) {
+                yield session_1.SessionModel.updateOne({ _id: one._id }, {
+                    read_time: Date.now(),
+                });
+            }
+            else {
+                const session = new session_1.SessionModel({
+                    suid: user_id,
+                    rid: puid,
+                    is_group: is_group,
+                    read_time: Date.now(),
+                });
+                yield session.save();
+            }
+        });
+    },
 };
 exports.sessionService = sessionService;

@@ -10,9 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.messageService = void 0;
-const typeorm_1 = require("typeorm");
 const message_1 = require("../database/mongo/model/message");
-const read_log_entity_1 = require("../database/mysql/entity/read-log.entity");
+const session_1 = require("../database/mongo/model/session");
 const messageService = {
     /**
      * @description 保存消息到 db
@@ -31,14 +30,15 @@ const messageService = {
     queryUnRead(user_id, params) {
         return __awaiter(this, void 0, void 0, function* () {
             const size = 20;
-            const readLogRepo = (0, typeorm_1.getRepository)(read_log_entity_1.ReadLogEntity);
             // 当前的已读序号
-            const log = yield readLogRepo.findOne({
-                where: {
-                    user_id: user_id,
-                    rid: params.rid,
-                    is_room: Number(params.is_group),
-                },
+            const log = yield session_1.SessionModel.findOne({
+                $or: [
+                    {
+                        suid: user_id,
+                        rid: params.rid,
+                        is_room: Number(params.is_group),
+                    },
+                ],
             });
             if (params.is_group) {
                 // 群消息
@@ -47,7 +47,7 @@ const messageService = {
                     is_group: true,
                 })
                     .where('time')
-                    .gt((log === null || log === void 0 ? void 0 : log.time) || 0)
+                    .gt((log === null || log === void 0 ? void 0 : log.read_time) || 0)
                     .sort({
                     create_time: -1,
                 })
@@ -71,7 +71,7 @@ const messageService = {
                 ],
             })
                 .where('time')
-                .gt((log === null || log === void 0 ? void 0 : log.time) || 0)
+                .gt((log === null || log === void 0 ? void 0 : log.read_time) || 0)
                 .sort({
                 create_time: -1,
             })

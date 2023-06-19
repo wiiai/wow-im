@@ -5,6 +5,7 @@ var CmdEnum;
 (function (CmdEnum) {
     CmdEnum[CmdEnum["private_chat"] = 0] = "private_chat";
     CmdEnum[CmdEnum["group_chat"] = 1] = "group_chat";
+    CmdEnum[CmdEnum["mark_read"] = 2] = "mark_read";
 })(CmdEnum = exports.CmdEnum || (exports.CmdEnum = {}));
 var MsgTypeEnum;
 (function (MsgTypeEnum) {

@@ -60,7 +60,31 @@ function onMessage(socket, user, payload, callback) {
             sendGroupMsg(socket, user, payload, callback);
             return;
         }
+        case IMessagePayload_1.CmdEnum.mark_read: {
+            markRead(socket, user, payload, callback);
+            return;
+        }
     }
+}
+/**
+ * 标签标记阅读时间
+ * @param socket
+ * @param user
+ * @param payload
+ * @param callback
+ */
+function markRead(socket, user, payload, callback) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const user_id = user.id;
+        const puid = payload.rid;
+        const is_group = payload.is_group || false;
+        yield session_service_1.sessionService.updateReadTime({
+            user_id,
+            puid,
+            is_group
+        });
+        callback === null || callback === void 0 ? void 0 : callback();
+    });
 }
 /**
  * @description 私聊
@@ -158,26 +182,26 @@ const initSocket = (server) => {
             // 监听断开
             Object.keys(meetingMap).forEach((meeting_id) => {
                 if (meetingMap[meeting_id]) {
-                    meetingMap[meeting_id] = meetingMap[meeting_id].filter((it => it !== user.id));
+                    meetingMap[meeting_id] = meetingMap[meeting_id].filter((it) => it !== user.id);
                 }
             });
             onDisconnected(socket, user);
         });
         // sdp 消息的转发
-        socket.on("sdp", (data) => {
+        socket.on('sdp', (data) => {
             console.log(`receive sdp: sender ${data.sender} to ${data.to}`, Boolean(userMap[data.to]));
             if (userMap[data.to]) {
-                userMap[data.to].emit("sdp", {
+                userMap[data.to].emit('sdp', {
                     description: data.description,
                     sender: data.sender,
                 });
             }
         });
         // candidates 消息的转发
-        socket.on("ice candidates", (data) => {
+        socket.on('ice candidates', (data) => {
             console.log(`receive ice candidates: sender ${data.sender} to ${data.to}`, Boolean(userMap[data.to]));
             if (userMap[data.to]) {
-                userMap[data.to].emit("ice candidates", {
+                userMap[data.to].emit('ice candidates', {
                     candidate: data.candidate,
                     sender: data.sender,
                 });
@@ -185,14 +209,14 @@ const initSocket = (server) => {
         });
         // 协议转发
         function transfer(name) {
-            socket.on(name, data => {
+            socket.on(name, (data) => {
                 const { to } = data, rest = __rest(data, ["to"]);
                 if (userMap[to]) {
                     userMap[to].emit(name, {
                         sender: user.id,
                         nickname: user.nickname,
                         avatar: user.avatar,
-                        data: rest
+                        data: rest,
                     });
                 }
             });
@@ -201,7 +225,7 @@ const initSocket = (server) => {
         transfer('enter-screen');
         transfer('enter-screen-answer');
         // 多人会议
-        socket.on('enter-meeting', data => {
+        socket.on('enter-meeting', (data) => {
             const { meeting_id } = data;
             console.log(`enter-meeting: ${user.id} enter ${meeting_id}`, data);
             if (!meetingMap[meeting_id]) {
@@ -218,10 +242,10 @@ const initSocket = (server) => {
             }
         });
         // 多人会议
-        socket.on('leave-meeting', data => {
+        socket.on('leave-meeting', (data) => {
             const { meeting_id } = data;
             if (meetingMap[meeting_id]) {
-                meetingMap[meeting_id] = meetingMap[meeting_id].filter((it => it !== user.id));
+                meetingMap[meeting_id] = meetingMap[meeting_id].filter((it) => it !== user.id);
             }
             // 通知会议里面的其他人, 我下线了...
             meetingMap[meeting_id].forEach((userId) => {
@@ -231,19 +255,19 @@ const initSocket = (server) => {
             });
         });
         // 视频聊天
-        socket.on('video-call', data => {
+        socket.on('video-call', (data) => {
             if (userMap[data.to]) {
                 userMap[data.to].emit('video-call', {
                     sender: user.id,
                     nickname: user.nickname,
-                    avatar: user.avatar
+                    avatar: user.avatar,
                 });
             }
         });
-        socket.on('video-call-answer', data => {
+        socket.on('video-call-answer', (data) => {
             if (userMap[data.to]) {
                 userMap[data.to].emit('video-call-answer', {
-                    status: data.status
+                    status: data.status,
                 });
             }
         });

@@ -18,7 +18,8 @@ const schema = new mongoose_1.Schema({
     // 消息序号
     time: { type: Number, required: true, default: () => Date.now() },
     // 最后条消息 id
-    last_message_id: { type: mongoose_1.Schema.Types.ObjectId, required: false }
+    last_message_id: { type: mongoose_1.Schema.Types.ObjectId, required: false },
+    read_time: { type: Number, required: false, default: () => 0 },
 });
 const SessionModel = (0, mongoose_1.model)('Session', schema);
 exports.SessionModel = SessionModel;
