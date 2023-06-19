@@ -183,7 +183,7 @@ const markReadLoop = () => {
       pid: props.rid,
       is_group: props.is_group
     });
-  }, 200)
+  }, 200) as number;
 }
 
 onMounted(() => {
