@@ -47,6 +47,9 @@ onMounted(() => {
               <van-icon class="m-icon" name="font-o" />
             </div>
           </div>
+          <div class="btn" @click="() => router.push('/me')">
+            <img class="setting" src="./assets/img/setting.svg" alt="">
+          </div>
         </div>
         <div class="main">
           <RouterView />
@@ -85,6 +88,7 @@ onMounted(() => {
   border-radius: 8px;
   background-color: #fff;
   .toolbar {
+    position: relative;
     width: 70px;
     border-right: 1px solid #eee;
     background-color: #f1f1f1;
@@ -112,6 +116,14 @@ onMounted(() => {
       color: #333;
       cursor: pointer;
       font-size: 28px;
+    }
+    .setting {
+      position: absolute;
+      bottom: 20px;
+      width: 24px;
+      left: 50%;
+      margin-left: -12px;
+      cursor: pointer;
     }
   }
   .main {

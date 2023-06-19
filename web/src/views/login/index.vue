@@ -2,7 +2,7 @@
   <div class="container">
     <v-card class="v-card mx-auto px-6 py-8" max-width="400">
       <div class="title2">
-        <h2>登录友友IM</h2>
+        <h2>友友IM</h2>
       </div>
       <v-text-field
         v-model="account"
@@ -85,6 +85,7 @@ const onSubmit = (values: any) => {
 
 .v-card {
   margin-top: -5%;
+  box-shadow: 1px 1px 10px #ccc;
 }
 
 .title {
@@ -100,7 +101,8 @@ const onSubmit = (values: any) => {
   position: relative;
   overflow: hidden;
   height: 100vh;
-  background-color: #f3f3f3;
+  background-color: #fff;
+  background: url(../../assets/img/bg.svg);
 }
 
 .tip {

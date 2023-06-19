@@ -24,6 +24,7 @@ onMounted(() => {
       </div>
       <div class="main">
         <div class="name">
+          <span v-if="item.is_group">[群]</span>
           <span>{{ item.nickname }}({{ item.id }})</span>
         </div>
       </div>

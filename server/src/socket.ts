@@ -9,6 +9,7 @@ import { userService } from './service/user.service';
 import { CmdEnum, IMessagePayload, MsgTypeEnum } from './types/IMessagePayload';
 import { getUrlParam } from './utils/getUrlParam';
 import { logger } from './utils/logger';
+import { ReadLogModel } from './database/mongo/model/read-log';
 
 // 连接状态维护
 const userMap = {} as Record<string, Socket>;
@@ -33,7 +34,12 @@ function onDisconnected(socket: Socket, user: UserEntity) {
  * @param payload
  * @param user
  */
-function onMessage(socket: Socket, user: UserEntity, payload: IMessagePayload, callback: Function) {
+function onMessage(
+  socket: Socket,
+  user: UserEntity,
+  payload: IMessagePayload,
+  callback: Function,
+) {
   console.log(payload, 222);
 
   switch (payload.cmd) {
@@ -45,7 +51,36 @@ function onMessage(socket: Socket, user: UserEntity, payload: IMessagePayload, c
       sendGroupMsg(socket, user, payload, callback);
       return;
     }
+    case CmdEnum.mark_read: {
+      markRead(socket, user, payload, callback);
+      return;
+    }
   }
+}
+
+/**
+ * 标签标记阅读时间
+ * @param socket
+ * @param user
+ * @param payload
+ * @param callback
+ */
+async function markRead(
+  socket: Socket,
+  user: UserEntity,
+  payload: IMessagePayload,
+  callback: Function,
+) {
+  const user_id = user.id;
+  const puid = payload.rid;
+  const is_group = payload.is_group || false;
+  
+  await sessionService.updateReadTime({
+    user_id,
+    puid,
+    is_group 
+  })
+  callback?.();
 }
 
 /**
@@ -58,7 +93,7 @@ async function sendPrivateMsg(
   socket: Socket,
   user: UserEntity,
   payload: IMessagePayload,
-  callback: Function
+  callback: Function,
 ) {
   const rid = payload.rid;
   const rCon = userMap[rid];
@@ -77,9 +112,13 @@ async function sendPrivateMsg(
   };
 
   const msg = await messageService.saveMessage(data);
-  await sessionService.saveSession({
-    ...data,
-  }, user, msg);
+  await sessionService.saveSession(
+    {
+      ...data,
+    },
+    user,
+    msg,
+  );
 
   // 给接收人发
   // 接收不一定在线
@@ -97,7 +136,7 @@ async function sendPrivateMsg(
       msg_no: payload.msg_no,
     });
 
-  callback()
+  callback();
 }
 
 /**
@@ -110,7 +149,7 @@ async function sendGroupMsg(
   socket: Socket,
   user: UserEntity,
   payload: IMessagePayload,
-  callback: Function
+  callback: Function,
 ) {
   const rid = payload.rid;
   const sCon = userMap[user.id];
@@ -125,7 +164,7 @@ async function sendGroupMsg(
     title: payload.title || '',
     content: payload.content,
     create_time: new Date(),
-    time: Date.now()
+    time: Date.now(),
   };
 
   const msg = await messageService.saveMessage(data);
@@ -205,17 +244,22 @@ export const initSocket = (server: http.Server) => {
       // 监听断开
       Object.keys(meetingMap).forEach((meeting_id) => {
         if (meetingMap[meeting_id]) {
-          meetingMap[meeting_id] = meetingMap[meeting_id].filter((it => it !== user.id))
+          meetingMap[meeting_id] = meetingMap[meeting_id].filter(
+            (it) => it !== user.id,
+          );
         }
-      })
-      onDisconnected(socket, user)
+      });
+      onDisconnected(socket, user);
     });
 
     // sdp 消息的转发
-    socket.on("sdp", (data) => {
-      console.log(`receive sdp: sender ${data.sender} to ${data.to}`,   Boolean(userMap[data.to]));
+    socket.on('sdp', (data) => {
+      console.log(
+        `receive sdp: sender ${data.sender} to ${data.to}`,
+        Boolean(userMap[data.to]),
+      );
       if (userMap[data.to]) {
-        userMap[data.to].emit("sdp", {
+        userMap[data.to].emit('sdp', {
           description: data.description,
           sender: data.sender,
         });
@@ -223,10 +267,13 @@ export const initSocket = (server: http.Server) => {
     });
 
     // candidates 消息的转发
-    socket.on("ice candidates", (data) => {
-      console.log(`receive ice candidates: sender ${data.sender} to ${data.to}`, Boolean(userMap[data.to]));
+    socket.on('ice candidates', (data) => {
+      console.log(
+        `receive ice candidates: sender ${data.sender} to ${data.to}`,
+        Boolean(userMap[data.to]),
+      );
       if (userMap[data.to]) {
-        userMap[data.to].emit("ice candidates", {
+        userMap[data.to].emit('ice candidates', {
           candidate: data.candidate,
           sender: data.sender,
         });
@@ -234,16 +281,16 @@ export const initSocket = (server: http.Server) => {
     });
 
     // 协议转发
-    function transfer (name: string) {
-      socket.on(name, data => {
+    function transfer(name: string) {
+      socket.on(name, (data) => {
         const { to, ...rest } = data;
         if (userMap[to]) {
           userMap[to].emit(name, {
             sender: user!.id,
             nickname: user!.nickname,
             avatar: user!.avatar,
-            data: rest
-          })
+            data: rest,
+          });
         }
       });
     }
@@ -253,55 +300,57 @@ export const initSocket = (server: http.Server) => {
     transfer('enter-screen-answer');
 
     // 多人会议
-    socket.on('enter-meeting', data => {
-      const {meeting_id} = data;
-      console.log(`enter-meeting: ${user.id} enter ${meeting_id}`, data)
+    socket.on('enter-meeting', (data) => {
+      const { meeting_id } = data;
+      console.log(`enter-meeting: ${user.id} enter ${meeting_id}`, data);
       if (!meetingMap[meeting_id]) {
         meetingMap[meeting_id] = [];
       }
       // 通知会议里面的其他人, 我上线了...
       meetingMap[meeting_id].forEach((userId) => {
-        if(userMap[`${userId}`] && userId != user.id) {
-          userMap[`${userId}`].emit('enter-meeting', { user_id: user.id })
+        if (userMap[`${userId}`] && userId != user.id) {
+          userMap[`${userId}`].emit('enter-meeting', { user_id: user.id });
         }
-      })
+      });
       if (!meetingMap[meeting_id].includes(user.id)) {
-        meetingMap[meeting_id].push(user.id)
+        meetingMap[meeting_id].push(user.id);
       }
     });
 
     // 多人会议
-    socket.on('leave-meeting', data => {
-      const {meeting_id} = data;
+    socket.on('leave-meeting', (data) => {
+      const { meeting_id } = data;
       if (meetingMap[meeting_id]) {
-        meetingMap[meeting_id] = meetingMap[meeting_id].filter((it => it !== user.id))
+        meetingMap[meeting_id] = meetingMap[meeting_id].filter(
+          (it) => it !== user.id,
+        );
       }
       // 通知会议里面的其他人, 我下线了...
       meetingMap[meeting_id].forEach((userId) => {
-        if(userMap[`userId`] && userId != user.id) {
-          userMap[`userId`].emit('leave-meeting', { user_id: user.id })
+        if (userMap[`userId`] && userId != user.id) {
+          userMap[`userId`].emit('leave-meeting', { user_id: user.id });
         }
-      })
+      });
     });
 
     // 视频聊天
-    socket.on('video-call', data => {
+    socket.on('video-call', (data) => {
       if (userMap[data.to]) {
         userMap[data.to].emit('video-call', {
           sender: user.id,
           nickname: user.nickname,
-          avatar: user.avatar
-        })
+          avatar: user.avatar,
+        });
       }
     });
 
-    socket.on('video-call-answer', data => {
+    socket.on('video-call-answer', (data) => {
       if (userMap[data.to]) {
         userMap[data.to].emit('video-call-answer', {
-          status: data.status
-        })
+          status: data.status,
+        });
       }
-    })
+    });
 
     // 监听消息
     socket.on('message', (message: IMessagePayload, callback) =>

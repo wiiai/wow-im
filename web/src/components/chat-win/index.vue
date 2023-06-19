@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import dayjs from "dayjs";
-import { computed, onMounted, ref, watchEffect, onUnmounted } from "vue";
+import { computed, watch, onMounted, ref, watchEffect, onUnmounted } from "vue";
 import { RecordRTCPromisesHandler } from "recordrtc";
 import { Howl } from "howler";
 import { Toast } from "vant";
@@ -85,8 +85,6 @@ const list = computed(() => {
 
 const onLoad = async () => {
 
-
-
   if (loading.value) {
     return;
   }
@@ -134,6 +132,7 @@ const onMount = () => {
 
   socket.markHasRead({
     pid: props.rid,
+    is_group: props.is_group
   });
 };
 
@@ -175,13 +174,25 @@ const onKeyup = (e: KeyboardEvent) => {
   }
 }
 
+const markReadLoop = () => {
+  clearInterval(window['markReadLoop']);
+  window['markReadLoop'] = setInterval(() => {
+    socket.markHasRead({
+      pid: props.rid,
+      is_group: props.is_group
+    });
+  }, 200)
+}
+
 onMounted(() => {
   onMount();
+  markReadLoop();
   document.addEventListener('keydown',onKeydown)
   document.addEventListener('keyup', onKeyup);
 });
 
 onUnmounted(() => {
+  clearInterval(window['markReadLoop']);
   document.removeEventListener('keydown',onKeydown)
   document.removeEventListener('keyup', onKeyup);
 })

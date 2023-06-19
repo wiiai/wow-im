@@ -11,6 +11,7 @@ export interface ISession {
   time: number;
   last_message_id?: Schema.Types.ObjectId;
   last_message?: IMessage;
+  read_time?: number;
 }
 
 const schema = new Schema<ISession>({
@@ -36,7 +37,9 @@ const schema = new Schema<ISession>({
   time: { type: Number, required: true, default: () => Date.now()  },
 
   // 最后条消息 id
-  last_message_id: { type: Schema.Types.ObjectId, required: false }
+  last_message_id: { type: Schema.Types.ObjectId, required: false },
+
+  read_time: { type: Number, required: false, default: () => 0 },
 });
 
 const SessionModel = model<ISession>('Session', schema);

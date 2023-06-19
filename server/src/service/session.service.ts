@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { IMessage, MessageModel } from '../database/mongo/model/message';
 import { ISession, SessionModel } from '../database/mongo/model/session';
 import { UserEntity } from '../database/mysql/entity/user.entity';
@@ -9,7 +10,7 @@ const sessionService = {
    * @description 创建或者更新
    * @param params
    */
-  async saveSession(params: ISession, user: UserEntity, msg: IMessage) {
+  async saveSession(params: ISession, user: UserEntity, msg: { _id: Types.ObjectId }) {
     const { suid, rid, ...rest } = params;
 
     {
@@ -97,9 +98,11 @@ const sessionService = {
     const user_id_list = list.filter((it) => !it.is_group).map((it) => it.rid);
     const group_id_list = list.filter((it) => it.is_group).map((it) => it.rid);
 
-    const lastMessages = await Promise.all(list.map((it) => {
-      return MessageModel.findOne({ _id: it.last_message_id });
-    }));
+    const lastMessages = await Promise.all(
+      list.map((it) => {
+        return MessageModel.findOne({ _id: it.last_message_id });
+      }),
+    );
 
     const users = await userService.getByIds(user_id_list);
     const groups = await groupService.get_group_info_by_id_list({
@@ -138,7 +141,7 @@ const sessionService = {
 
         const last_message = lastMessages.find((m) => {
           return m?._id.toString() === it.last_message_id?.toString();
-        })
+        });
 
         return {
           ...rInfo,
@@ -146,6 +149,44 @@ const sessionService = {
         };
       }),
     };
+  },
+
+  async updateReadTime({
+    user_id,
+    puid,
+    is_group,
+  }: {
+    user_id: number;
+    puid: number;
+    is_group: boolean;
+  }) {
+    // 给发送者创建 session
+    const one = await SessionModel.findOne({
+      $or: [
+        {
+          suid: user_id,
+          rid: puid,
+          is_group: is_group,
+        },
+      ],
+    });
+
+    if (one) {
+      await SessionModel.updateOne(
+        { _id: one._id },
+        {
+          read_time: Date.now(),
+        },
+      );
+    } else {
+      const session = new SessionModel({
+        suid: user_id,
+        rid: puid,
+        is_group: is_group,
+        read_time: Date.now(),
+      });
+      await session.save();
+    }
   },
 };
 

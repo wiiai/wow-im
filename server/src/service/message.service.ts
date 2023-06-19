@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { IMessage, MessageModel } from '../database/mongo/model/message';
 import { ReadLogEntity } from '../database/mysql/entity/read-log.entity';
+import { SessionModel } from '../database/mongo/model/session';
 
 const messageService = {
   /**
@@ -21,15 +22,16 @@ const messageService = {
     params: { rid: number; is_group: boolean },
   ) {
     const size = 20;
-    const readLogRepo = getRepository(ReadLogEntity);
 
     // 当前的已读序号
-    const log = await readLogRepo.findOne({
-      where: {
-        user_id: user_id,
-        rid: params.rid,
-        is_room: Number(params.is_group),
-      },
+    const log = await SessionModel.findOne({
+      $or: [
+        {
+          suid: user_id,
+          rid: params.rid,
+          is_room: Number(params.is_group),
+        },
+      ],
     });
 
     if (params.is_group) {
@@ -39,7 +41,7 @@ const messageService = {
         is_group: true,
       })
         .where('time')
-        .gt(log?.time || 0)
+        .gt(log?.read_time || 0)
         .sort({
           create_time: -1,
         })
@@ -65,7 +67,7 @@ const messageService = {
       ],
     })
       .where('time')
-      .gt(log?.time || 0)
+      .gt(log?.read_time || 0)
       .sort({
         create_time: -1,
       })

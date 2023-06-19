@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
         "Pinia",
+        "puid",
         "tinyint",
+        "typeorm",
         "uuidv",
         "vant",
         "yuyin"

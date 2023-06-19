@@ -1,6 +1,7 @@
 export enum CmdEnum {
   private_chat = 0,
-  group_chat = 1
+  group_chat = 1,
+  mark_read = 2
 }
 
 export enum MsgTypeEnum {
@@ -16,4 +17,5 @@ export interface IMessagePayload {
   msg_no: string;
   type: number;
   title?: string;
+  is_group?: boolean;
 }

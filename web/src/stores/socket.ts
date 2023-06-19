@@ -124,14 +124,25 @@ export const useSocketStore = defineStore("socket", {
     },
 
     // 标记已读
-    markHasRead (params: { pid: number }) {
-      this.list.forEach((it) => {
-        if (it.suid === params.pid) {
-          it.is_read = true;
-        }
-      })
-      this.$patch({ list: this.list });
-      this.save();
+    markHasRead (params: { pid: number, is_group: Boolean }) {
+      const hasUnRead = this.list.filter((it) => !it.is_read);
+      if (hasUnRead.length) {
+        this.list.forEach((it) => {
+          if (it.suid === params.pid) {
+            it.is_read = true;
+          }
+        })
+        this.$patch({ list: this.list });
+        this.save();
+        socket.emit("message", {
+          user_id: getUserId() as number,
+          cmd: 2,
+          rid: params.pid,
+          is_group: params.is_group
+        }, () => {
+          console.log('send success');
+        });
+      }
     },
 
     async (to: number, content: {}) {
