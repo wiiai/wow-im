@@ -49,6 +49,8 @@
 
 <img width="400" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/47d4d9ac-7932-4917-a2ed-f68748791ca2"><img width="400" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/0592911b-dae1-470d-b88c-fa010a34301d">
 
+### 2.1 未读数量
+### 2.2 标记已读
 
 ## 会议流程
 1、给在线用户发起会议邀请推送，被邀请者点击同意后进入会议详情
