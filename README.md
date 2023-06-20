@@ -28,6 +28,14 @@
 - 会话
   - [x] 会话列表
   - [x] 历史消息
+ 
+## 会话列表的维护
+
+会话列表表示你之前聊天过的对象，包括群以及好友，类似微信首页
+
+![image](https://github.com/wiiai/wow-im/assets/34447750/1c1ab21e-3945-455d-903e-dc153bec57f0)
+
+![image](https://github.com/wiiai/wow-im/assets/34447750/6d4faa16-f9bb-4c1f-ae56-bc7e626e787c)
 
 
 ## 会议流程
