@@ -54,6 +54,9 @@
 <img width="400" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/47d4d9ac-7932-4917-a2ed-f68748791ca2"><img width="400" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/0592911b-dae1-470d-b88c-fa010a34301d">
 
 ### 2.1 未读数量
+- 私聊时阅读人只有1个，群聊时阅读人就有很多了，每个人每条消息如何维护呢？如果每个人每条消息都要维护一条记录，拿数据量太大了。
+- 未读数量这个值，是直接维护在 DB 中？，还是初始化查询时动态计算？采用后者比较合理，否则每次写入时，需要更新 `未读数量`
+
 ### 2.2 标记已读
 
 ## 会议流程
