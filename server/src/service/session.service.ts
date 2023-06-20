@@ -10,41 +10,43 @@ const sessionService = {
    * @description 创建或者更新
    * @param params
    */
-  async saveSession(params: ISession, user: UserEntity, msg: { _id: Types.ObjectId }) {
+  async saveSession(
+    params: ISession,
+    user: UserEntity,
+    msg: { _id: Types.ObjectId },
+  ) {
     const { suid, ruid, ...rest } = params;
 
-    {
-      // 给发送者创建 session
-      const one = await SessionModel.findOne({
-        $or: [
-          {
-            suid,
-            ruid,
-            is_group: rest.is_group,
-          },
-        ],
-      });
-
-      if (one) {
-        await SessionModel.updateOne(
-          { _id: one._id },
-          {
-            ...rest,
-            last_message_id: msg._id,
-          },
-        );
-      } else {
-        const session = new SessionModel({
+    // 给发送者创建 session
+    const one = await SessionModel.findOne({
+      $or: [
+        {
           suid,
           ruid,
+          is_group: rest.is_group,
+        },
+      ],
+    });
+
+    if (one) {
+      await SessionModel.updateOne(
+        { _id: one._id },
+        {
           ...rest,
           last_message_id: msg._id,
-        });
-        await session.save();
-      }
+        },
+      );
+    } else {
+      const session = new SessionModel({
+        suid,
+        ruid,
+        ...rest,
+        last_message_id: msg._id,
+      });
+      await session.save();
     }
 
-    {
+    if (!rest.is_group) {
       // 给接收者创建 session
       const one = await SessionModel.findOne({
         $or: [
@@ -151,6 +153,10 @@ const sessionService = {
     };
   },
 
+  /**
+   * 更新 session 最后阅读时间
+   * @param param0
+   */
   async updateReadTime({
     user_id,
     ruid,
@@ -185,7 +191,8 @@ const sessionService = {
         is_group: is_group,
         read_time: Date.now(),
         create_time: Date.now(),
-        content: ''
+        content: '...',
+        type: 1,
       });
       await session.save();
     }

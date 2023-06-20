@@ -39,6 +39,9 @@ function onMessage(
   payload: IMessagePayload,
   callback: Function,
 ) {
+  console.log(`new message`);
+  console.dir(payload, 5);
+
   switch (payload.cmd) {
     case CmdEnum.private_chat: {
       sendPrivateMsg(socket, user, payload, callback);
@@ -75,7 +78,7 @@ async function markRead(
   await sessionService.updateReadTime({
     user_id,
     ruid,
-    is_group 
+    is_group,
   });
 
   callback?.();

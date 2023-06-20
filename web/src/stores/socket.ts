@@ -48,7 +48,8 @@ export const useSocketStore = defineStore("socket", {
           return (
             !it.is_read &&
             `${it.ruid}` === `${getUserId()}` &&
-            session.ruid === it.suid
+            session.ruid === it.suid &&
+            session.is_group === it.is_group
           );
         });
 
@@ -108,22 +109,34 @@ export const useSocketStore = defineStore("socket", {
           this.list.push({ ...message, is_read: false });
           this.save();
 
-          const session = this.sessions.find(
-            (s) => s.ruid === message.suid
-          );
+          const session = !message.is_group ? this.sessions.find(
+            (s) => s.ruid === message.suid && s.is_group === message.is_group
+          ) : this.sessions.find(
+            (s) => s.ruid === message.ruid && s.is_group === message.is_group
+          )
 
           if (session) {
             session.last_message = message;
             session.unread = (session.unread || 0) + 1;
             this.$patch({ sessions: this.sessions });
           } else {
-            this.sessions.push({
-              nickname: message.from_nickname,
-              avatar: message.from_avatar,
-              is_group: message.is_group,
-              ruid: message.suid,
-              last_message: message
-            })
+            if (message.is_group) {
+              this.sessions.push({
+                nickname: message.to_nickname,
+                avatar: message.to_avatar,
+                is_group: message.is_group,
+                ruid: message.ruid,
+                last_message: message
+              })
+            } else {
+              this.sessions.push({
+                nickname: message.from_nickname,
+                avatar: message.from_avatar,
+                is_group: message.is_group,
+                ruid: message.suid,
+                last_message: message
+              })
+            }
           }
         }
         this.goBottom()
@@ -132,20 +145,23 @@ export const useSocketStore = defineStore("socket", {
 
     // 标记已读
     markHasRead (params: { pid: number, is_group: number }) {
-      const hasUnRead = this.list.filter((it) => !it.is_read);
+      const hasUnRead = this.list.filter((it) => !it.is_read && it.suid === params.pid && it.is_group === params.is_group);
+      console.log(hasUnRead, params)
       if (hasUnRead.length) {
         this.list.forEach((it) => {
-          if (it.suid === params.pid) {
+          if (it.suid === params.pid && it.is_group === params.is_group) {
             it.is_read = true;
           }
         })
+
         this.$patch({ list: this.list });
         this.save();
         socket.emit("message", {
           user_id: getUserId() as number,
           cmd: 2,
           ruid: params.pid,
-          is_group: params.is_group
+          is_group: params.is_group,
+          content: ''
         }, () => {
           console.log('send success');
         });
@@ -182,7 +198,7 @@ export const useSocketStore = defineStore("socket", {
         this.save();
 
         const session = this.sessions.find(
-          (s) => s.ruid === payload.ruid
+          (s) => s.ruid === payload.ruid && s.is_group === payload.is_group
         );
 
         if (session) {
@@ -197,6 +213,7 @@ export const useSocketStore = defineStore("socket", {
             ruid: payload.ruid,
             last_message: item
           })
+          this.$patch({ sessions: JSON.parse(JSON.stringify(this.sessions)) });
         }
       });
 
