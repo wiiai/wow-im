@@ -47,7 +47,7 @@
 ## 2. 未读消息的维护
 未读消息有两个维度，首先单个会话的未读，其次所有会话的累积未读，假如一个群有100人，那么100人中每个人的未读数量可能是不同的
 
-<img width="500" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/47d4d9ac-7932-4917-a2ed-f68748791ca2"> <img width="500" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/0592911b-dae1-470d-b88c-fa010a34301d">
+<img width="400" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/47d4d9ac-7932-4917-a2ed-f68748791ca2"><img width="400" alt="image" src="https://github.com/wiiai/wow-im/assets/34447750/0592911b-dae1-470d-b88c-fa010a34301d">
 
 
 ## 会议流程
