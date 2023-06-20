@@ -1,87 +1,102 @@
 import { Types } from 'mongoose';
-import { IMessage, MessageModel } from '../database/mongo/model/message';
-import { ISession, SessionModel } from '../database/mongo/model/session';
-import { UserEntity } from '../database/mysql/entity/user.entity';
+import { MessageModel } from '../database/mongo/model/message';
+import { SessionModel } from '../database/mongo/model/session';
 import { groupService } from './group.service';
 import { userService } from './user.service';
 
 const sessionService = {
-  /**
-   * @description 创建或者更新
-   * @param params
-   */
-  async saveSession(
-    params: ISession,
-    user: UserEntity,
+  // 私聊创建 session
+  async createSession(
+    params: {
+      suid: number;
+      ruid: number;
+      is_group: number;
+    },
     msg: { _id: Types.ObjectId },
   ) {
-    const { suid, ruid, ...rest } = params;
+    const { suid, ruid, is_group } = params;
+    const oneParams = { suid, ruid, is_group, is_active: 1 };
+    const twoParams = { suid: ruid, ruid: suid, is_group, is_active: 1 };
 
     // 给发送者创建 session
     const one = await SessionModel.findOne({
-      $or: [
-        {
-          suid,
-          ruid,
-          is_group: rest.is_group,
-        },
-      ],
+      $or: [oneParams],
     });
-
-    if (one) {
-      await SessionModel.updateOne(
-        { _id: one._id },
-        {
-          ...rest,
-          last_message_id: msg._id,
-        },
-      );
-    } else {
+    if (!one) {
       const session = new SessionModel({
-        suid,
-        ruid,
-        ...rest,
+        ...oneParams,
         last_message_id: msg._id,
       });
       await session.save();
+    } else {
+      await SessionModel.updateOne(
+        { _id: one._id },
+        {
+          last_message_id: msg._id,
+        },
+      );
     }
 
-    if (!rest.is_group) {
-      // 给接收者创建 session
+    // 给接收者创建 session
+    const two = await SessionModel.findOne({
+      $or: [twoParams],
+    });
+    if (!two) {
+      const session = new SessionModel({
+        ...twoParams,
+        last_message_id: msg._id,
+      });
+      await session.save();
+    } else {
+      await SessionModel.updateOne(
+        { _id: two._id },
+        {
+          last_message_id: msg._id,
+        },
+      );
+    }
+  },
+
+  // 群聊创建 session
+  async createGroupSession(
+    params: {
+      suid: number;
+      ruid: number; // 群ID
+      is_group: number;
+    },
+    msg: { _id: Types.ObjectId },
+  ) {
+    const users = await groupService.getUserListById({ id: params.ruid });
+    for (let user of users.list) {
       const one = await SessionModel.findOne({
         $or: [
           {
-            suid: ruid,
-            ruid: suid,
-            is_group: rest.is_group,
+            suid: user.id,
+            ruid: params.ruid,
+            is_group: 1,
           },
         ],
       });
-
-      if (one) {
-        await SessionModel.updateOne(
-          { _id: one._id },
-          {
-            ...rest,
-            last_message_id: msg._id,
-          },
-        );
-      } else {
+      if (!one) {
         const session = new SessionModel({
-          suid: ruid,
-          ruid: suid,
-          ...rest,
+          suid: user.id,
+          ruid: params.ruid,
+          is_group: 1,
           last_message_id: msg._id,
         });
         await session.save();
+      } else {
+        await SessionModel.updateOne(
+          { _id: one._id },
+          {
+            last_message_id: msg._id,
+          },
+        );
       }
     }
   },
 
-  /**
-   * @description 查询聊天列表
-   * @param params
-   */
+  // 查询会话列表
   async querySession(params: { userId: number }) {
     const list = await SessionModel.find({
       $or: [
@@ -153,10 +168,7 @@ const sessionService = {
     };
   },
 
-  /**
-   * 更新 session 最后阅读时间
-   * @param param0
-   */
+  // 更新 session 最后阅读时间
   async updateReadTime({
     user_id,
     ruid,
@@ -184,17 +196,6 @@ const sessionService = {
           read_time: Date.now(),
         },
       );
-    } else {
-      const session = new SessionModel({
-        suid: user_id,
-        ruid: ruid,
-        is_group: is_group,
-        read_time: Date.now(),
-        create_time: Date.now(),
-        content: '...',
-        type: 1,
-      });
-      await session.save();
     }
   },
 };

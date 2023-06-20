@@ -44,7 +44,13 @@ export const useSocketStore = defineStore("socket", {
     sessionList(state) {
       return state.sessions.map((session) => {
         // 未读消息列表
-        const list = state.list.filter((it) => {
+        const list = session.is_group ? state.list.filter((it) => {
+          return (
+            !it.is_read &&
+            session.ruid === it.ruid &&
+            session.is_group === it.is_group
+          );
+        }) : state.list.filter((it) => {
           return (
             !it.is_read &&
             `${it.ruid}` === `${getUserId()}` &&
@@ -284,7 +290,7 @@ export const useSocketStore = defineStore("socket", {
       });
       for (let i = 0; i < this.sessions.length; i++) {
         const s = this.sessionList[i];
-        const res = await pullUnreadList({ ruid: s.ruid, is_group: s.is_group })
+        const res = await query_history_list({ ruid: s.ruid, is_group: s.is_group })
         this.list = [...this.list, ...res.data.list].sort((a, b) => a.time - b.time);
         console.log(this.list)
       }

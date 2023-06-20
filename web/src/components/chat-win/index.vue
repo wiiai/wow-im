@@ -102,7 +102,7 @@ const onLoad = async () => {
   try {
     await sleep(500);
     await socket.queryHistory({
-      rid: props.ruid,
+      ruid: props.ruid,
       seq: list.value.length ? list.value[0].time : 0,
       is_group: Number(props.is_group),
     });

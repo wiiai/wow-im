@@ -113,12 +113,13 @@ async function sendPrivateMsg(
   };
 
   const msg = await messageService.saveMessage(data);
-  await sessionService.saveSession(
+  await sessionService.createSession(
     {
-      ...data,
+      suid: user.id,
+      ruid: payload.ruid,
+      is_group: 0
     },
-    user,
-    msg,
+    msg
   );
 
   // 给接收人发
@@ -169,7 +170,11 @@ async function sendGroupMsg(
   };
 
   const msg = await messageService.saveMessage(data);
-  await sessionService.saveSession(data, user, msg);
+  await sessionService.createGroupSession({
+    suid: user.id,
+    ruid: payload.ruid,
+    is_group: 1,
+  }, msg);
 
   rUsers
     .filter((it) => {
